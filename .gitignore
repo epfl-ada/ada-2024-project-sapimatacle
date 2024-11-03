@@ -1,6 +1,12 @@
 # our files
 maylis.ipynb
 salome.ipynb
+takuya.ipynb
+
+# logs
+logs/
+constants.py
+
 # macOS
 .DS_Store
 .AppleDouble

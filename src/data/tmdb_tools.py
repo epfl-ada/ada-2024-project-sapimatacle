@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 from tqdm import tqdm
 from tqdm.asyncio import tqdm_asyncio
@@ -7,7 +8,7 @@ import logging
 import asyncio
 import aiohttp
 
-from constants import API_KEY
+from .constants import API_KEY
 
 tqdm.pandas()
 
@@ -80,21 +81,33 @@ async def get_tmdb_id_from_wikipedia_page_id(page_id: int,
 async def get_collection_info(movie_id: int, session: aiohttp.ClientSession, semaphore: asyncio.Semaphore, logger=logging.Logger):
     url = f"https://api.themoviedb.org/3/movie/{movie_id}"
     params = {'api_key': API_KEY}
+    keys = ['collection_name', 'collection_id', "vote_count", "vote_average", "genres", "budget", "revenue", "run_time", "tmdb_origin_country", "tmdb_original_language"]
+    my_dict = {k: None for k in keys}
 
     async with semaphore:
         async with session.get(url, params=params) as response:
             if response.status == 200:
                 data = await response.json()
-                if data.get('belongs_to_collection'):
+                # get collection info
+                if data.get('belongs_to_collection'): # None if it does not belong to a collection
                     collection = data['belongs_to_collection']
-                    # TODO: return dict instead of list
-                    return collection['name'], collection['id']
+                    my_dict['collection_name'] = collection['name']
+                    my_dict['collection_id'] = collection['id']
                 else:
-                    logger.info(f"No collection found for {movie_id}")
-                    return None, None
+                    logger.info(msg=f"No collection found for {movie_id}")
+                
+                # get other info
+                my_dict['vote_count'] = data.get('vote_count')
+                my_dict['vote_average'] = data.get('vote_average')
+                my_dict['genres'] = data.get('genres')
+                my_dict['budget'] = data.get('budget')
+                my_dict['revenue'] = data.get('revenue')
+                my_dict['run_time'] = data.get('runtime')
+                my_dict['tmdb_origin_country'] = data.get('origin_country')
+                my_dict['tmdb_original_language'] = data.get('original_language')
             else:
-                logger.warning(f"Error: Unable to retrieve data for {movie_id}. Status Code: {response.status}")
-                return None, None
+                logger.warning(msg=f"Error: Unable to retrieve data for {movie_id}. Status Code: {response.status}")
+    return my_dict
     
 if __name__ == "__main__":
     # Add headers to the DataFrame

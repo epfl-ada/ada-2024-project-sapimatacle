@@ -42,4 +42,17 @@ We complement our movie data by merging data from [the movie database (TMDB)](ht
 
 ## Usage
 
-Must do
+### Package installation
+Conda installation
+
+### Fetching TMDB data
+
+1. Make sure that `movie.metadata.tsv` is in `data/`. The CMU dataset can be downloaded from [this link](https://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz).
+2. Obtain an API key from TMDB. Please follow the instruction on [this webpage](https://developer.themoviedb.org/docs/getting-started).
+3. Create `data/constants.py` and add the following:
+
+```python
+API_KEY = "YOUR_API_KEY"
+```
+
+4. From the root, run `python fetch_data_from_tmdb.py`. This will create `data/movie_metadata_with_tmdb.csv`. Note that the run will take 2-3 hours, depending on your Internet connection.

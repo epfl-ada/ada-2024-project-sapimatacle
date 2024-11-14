@@ -89,7 +89,7 @@ def main(get_id: bool):
         list_of_dict = asyncio.run(fetch_tmdb_info(tmdb_ids))
         for k in KEYS:
             movie_metadata[k] = [d.get(k) for d in list_of_dict]
-        movie_metadata.to_csv("Data/movie_metadata_with_tmdb_2.csv", index=False)
+        movie_metadata.to_csv("Data/movie_metadata_with_tmdb.csv", index=False)
     print("Data fetching complete!")
 
 

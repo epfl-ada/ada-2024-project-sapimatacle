@@ -37,6 +37,7 @@ We complement our movie data by merging data from [the movie database (TMDB)](ht
 ## Proposed timeline
 
 ## Organization within the team
+* Takuya will work on
 
 ## Questions for TAs
 
@@ -45,8 +46,8 @@ We complement our movie data by merging data from [the movie database (TMDB)](ht
 ### Package installation
 Conda installation
 
-### Fetching TMDB data
 
+### Fetching TMDB data
 1. Make sure that `movie.metadata.tsv` is in `data/`. The CMU dataset can be downloaded from [this link](https://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz).
 2. Obtain an API key from TMDB. Please follow the instruction on [this webpage](https://developer.themoviedb.org/docs/getting-started).
 3. Create `data/constants.py` and add the following:

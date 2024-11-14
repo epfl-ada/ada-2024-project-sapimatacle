@@ -1,14 +1,19 @@
-import os
-
-import pandas as pd
 from tqdm import tqdm
-from tqdm.asyncio import tqdm_asyncio
 import backoff
 import logging
 import asyncio
 import aiohttp
 
 from .constants import API_KEY
+
+######################
+# This python code takes advantage of the asyncio library to make asynchronous requests
+# to the Wikipedia and Wikidata APIs to extract TMDB IDs from Wikipedia page IDs.
+
+# It is important to set the backoff appropriately to avoid overwhelming the APIs with requests.
+# The backoff parameters are already optimized for this purpose.
+######################
+
 
 tqdm.pandas()
 
@@ -19,7 +24,6 @@ tqdm.pandas()
     giveup=lambda e: e.status != 429,  # Only retry if status code is 429 (Too Many Requests)
     factor=0.2  # Exponential backoff factor
 )
-
 async def get_tmdb_id_from_wikipedia_page_id(page_id: int,
                                              session: aiohttp.ClientSession,
                                              semaphore: asyncio.Semaphore,
@@ -53,8 +57,6 @@ async def get_tmdb_id_from_wikipedia_page_id(page_id: int,
                 }
                 async with session.get(wikidata_url, params=wikidata_params) as wikidata_response:
                     wikidata_data = await wikidata_response.json()
-                    # print(json.dumps(wikidata_data, indent=2))
-                    
                     # Extract TMDB ID
                     if "entities" in wikidata_data:
                         for entity in wikidata_data["entities"].values():
@@ -108,16 +110,3 @@ async def get_collection_info(movie_id: int, session: aiohttp.ClientSession, sem
             else:
                 logger.warning(msg=f"Error: Unable to retrieve data for {movie_id}. Status Code: {response.status}")
     return my_dict
-    
-if __name__ == "__main__":
-    # Add headers to the DataFrame
-    movie_metadata = pd.read_csv('Data/movie.metadata.tsv', sep='\t')
-    movie_metadata.columns = [
-        'Wikipedia movie ID', 'Freebase movie ID', 'Movie name', 'Movie release date', 
-        'Movie box office revenue', 'Movie runtime', 'Movie languages (Freebase ID:name tuples)', 
-        'Movie countries (Freebase ID:name tuples)', 'Movie genres (Freebase ID:name tuples)'
-    ]
-    page_ids = movie_metadata["Wikipedia movie ID"]
-    log_file_name = "tmdb_id_extraction.log"
-    tmdb_ids = asyncio.run(main(page_ids, log_file_name))
-

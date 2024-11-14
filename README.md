@@ -8,11 +8,15 @@ We often hear that the second movie in a franchise is always worse than the firs
 
 Following the objectives discussed in the abstract, here is the list of concrete questions to tackle with:
 
-* Do franchise movies degrade in quality and box office revenue as the sequel continues?
-* Is there an underlying pattern of features that makes franchise movies successful?
-  * Do some movie genres achieve higher box office revenue in moive franchise than the others? Is the trend consistent in non-franchise movies as well?
-  * What are the features that are most useful in predicting box office revenue?
-  * Do actors of certain ethnicity groups play particular personas more frequently? Are they depicted positively (hero/heroine) or negatively (villain) in the movie?
+Q1: Do franchise movies degrade in quality and box office revenue as the sequel continues?
+
+Q2: Is there an underlying pattern of features that makes franchise movies successful?
+
+1. Do some movie genres achieve higher box office revenue in moive franchise than the others? Is the trend consistent in non-franchise movies as well?
+
+2. What are the features that are most useful in predicting box office revenue?
+
+3. Do actors of certain ethnicity groups play particular personas more frequently? Are they depicted positively (hero/heroine) or negatively (villain) in the movie?
   
 ## Proposed additional dataset
 
@@ -39,15 +43,16 @@ We complement our movie data by merging data from [the movie database (TMDB)](ht
 ## Organization within the team
 * Takuya will work on
 
-## Questions for TAs
+## Questions for TAs (optional)
 
 ## Usage
 
 ### Package installation
+
 Conda installation
 
-
 ### Fetching TMDB data
+
 1. Make sure that `movie.metadata.tsv` is in `data/`. The CMU dataset can be downloaded from [this link](https://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz).
 2. Obtain an API key from TMDB. Please follow the instruction on [this webpage](https://developer.themoviedb.org/docs/getting-started).
 3. Create `data/constants.py` and add the following:

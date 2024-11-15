@@ -2,6 +2,7 @@ import time
 import pandas as pd
 import numpy as np
 from SPARQLWrapper import SPARQLWrapper, JSON
+from collections import Counter
 
 def get_franchise_movies(data: pd.DataFrame):
     """Return movies that are part of a franchise and have more than one movie in the franchise.
@@ -39,6 +40,113 @@ def get_franchise_data(data: pd.DataFrame):
         )
     ).astype(float)
     franchise_country = data.groupby('collection_id')['Movie countries (Freebase ID:name tuples)'].apply(lambda x: ', '.join(x.unique()))
+    # Extract the country names from the dictionary strings
+    franchise_country = franchise_country.apply(lambda x: ', '.join([country.split(': "')[1].split('"')[0] for country in x.split(', ') if ': "' in country]))
+    #region map variable
+    region_name_map = {
+        'United States of America': 'North America',
+        'Canada': 'North America',
+        'United Kingdom': 'Europe',
+        'Germany': 'Europe',
+        'France': 'Europe',
+        'Japan': 'Asia',
+        'Australia': 'Oceania',
+        'Italy': 'Europe',
+        'Spain': 'Europe',
+        'China': 'Asia',
+        'South Korea': 'Asia',
+        'India': 'Asia',
+        'Sweden': 'Europe',
+        'Denmark': 'Europe',
+        'Norway': 'Europe',
+        'Finland': 'Europe',
+        'Netherlands': 'Europe',
+        'Belgium': 'Europe',
+        'Ireland': 'Europe',
+        'New Zealand': 'Oceania',
+        'Mexico': 'North America',
+        'Brazil': 'South America',
+        'Soviet Union': 'Russia',
+        'Russia': 'Russia',
+        'Hong Kong': 'Asia',
+        'Taiwan': 'Asia',
+        'Switzerland': 'Europe',
+        'Austria': 'Europe',
+        'Czech Republic': 'Europe',
+        'Poland': 'Europe',
+        'Hungary': 'Europe',
+        'South Africa': 'Africa',
+        'Argentina': 'South America',
+        'Chile': 'South America',
+        'Peru': 'South America',
+        'Colombia': 'South America',
+        'Venezuela': 'South America',
+        'Portugal': 'Europe',
+        'Greece': 'Europe',
+        'Turkey': 'Asia',
+        'Weimar Republic': 'Europe',
+        'Thailand': 'Asia',
+        'Philippines': 'Asia',
+        'Singapore': 'Asia',
+        'German Democratic Republic': 'Europe',
+        'Yugoslavia': 'Europe',
+        'Czechoslovakia': 'Europe',
+        'West Germany': 'Europe',
+        'East Germany': 'Europe',
+        'Kingdom of Great Britain': 'Europe',
+        'Bahamas': 'North America',
+        'Ukraine': 'Europe',
+        'Cambodia': 'Asia',
+        'Romania': 'Europe',
+        'Panama': 'North America',
+        'Egypt': 'Africa',
+        'Morocco': 'Africa',
+        'Tunisia': 'Africa',
+        'Algeria': 'Africa',
+        'Libya': 'Africa',
+        'Ethiopia': 'Africa',
+        'Indonesia': 'Asia',
+        'Malaysia': 'Asia',
+        'Iceland': 'Europe',
+        'Luxembourg': 'Europe',
+        'Sweden': 'Europe',
+        'Norway': 'Europe',
+        'Finland': 'Europe',
+        'Iran': 'Asia',
+        'Iraq': 'Asia',
+        'Zimbabwe': 'Africa',
+        'Slovakia': 'Europe',
+        'Serbia': 'Europe',
+        'Federal Republic of Yugoslavia': 'Europe',
+        'Bulgaria': 'Europe',
+        # Add more countries/regions as needed
+    }
+
+    # Function to process the countries and map them to regions
+    def process_countries(countries, mapping):
+        # Split the countries into a list
+        country_list = [country.strip() for country in countries.split(',')]
+        
+        # Count the occurrences of each country
+        country_counts = Counter(country_list)
+        
+        # Sort countries by frequency and remove duplicates
+        sorted_countries = [country for country, _ in country_counts.most_common()]
+        
+        # Map countries to their regions, removing duplicates
+        regions = {mapping.get(country, 'Unknown') for country in sorted_countries}
+        
+        # Return the processed results
+        return {
+            'countries_sorted': ', '.join(sorted_countries),
+            'regions': ', '.join(sorted(regions))
+        }
+    # Apply the function to the DataFrame
+    temp= franchise_country.apply(
+        lambda x: pd.Series(process_countries(x, region_name_map))
+    )
+    franchise_region = temp['regions']
+    franchise_country = temp['countries_sorted']
     franchise_average_score= data.groupby('collection_id')['vote_average'].mean()
     franchise_data = pd.DataFrame({
         'collection_id': franchise_oldest_release.index,
@@ -50,6 +158,7 @@ def get_franchise_data(data: pd.DataFrame):
         'franchise_length_years': franchise_length_years,
         'revenue': franchise_revenue.values,
         'country': franchise_country.values,
+        'region': franchise_region.values,
         'average_score': franchise_average_score.values
     }).reset_index(drop=True)
     return franchise_data

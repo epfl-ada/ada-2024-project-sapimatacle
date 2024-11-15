@@ -168,7 +168,7 @@ col_for_dropna = ['Wikipedia_movie_ID', 'Freebase_movie_ID', 'Movie_release_date
                   'Actor_gender', 'Actor_name', 'Freebase_character_actor_map_ID',
                   'Freebase_actor_ID']
 
-def clean_character_metadata(data: pd.DataFrame, columns: list =col_for_dropna):
+def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: list =col_for_dropna):
     """Drop rows if specified columns have missing values. Also add 
     Args:
         data: pandas dataframe of 'data/character.metadata.tsv'
@@ -182,11 +182,14 @@ def clean_character_metadata(data: pd.DataFrame, columns: list =col_for_dropna):
     print(f"{character_df.shape[0]} rows remaining.")
     ethnicity_ids = character_df["Actor_ethnicity_Freebase_ID"].dropna().unique().tolist()
     ethnicity_ids_1 = ethnicity_ids[:200] # The header length is limited, so divide into two parts
-    time.sleep(0.1) # To avoid rate limiting
+    time.sleep(1) # To avoid rate limiting
     ethnicity_ids_2 = ethnicity_ids[200:]
     id_to_ethnicity = get_labels_from_freebase_ids(ethnicity_ids_1)
     id_to_ethnicity = id_to_ethnicity | get_labels_from_freebase_ids(ethnicity_ids_2)
     character_df["ethnicity"] = character_df["Actor_ethnicity_Freebase_ID"].map(id_to_ethnicity)
+
+    ethnicity_to_race_dict = pd.read_csv(mapping_path).set_index('Ethnicity')['Group'].to_dict()
+    character_df["racial_group"] = character_df.ethnicity.map(ethnicity_to_race_dict)
     return character_df
 
 def custom_autopct(values):

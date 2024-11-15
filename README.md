@@ -37,6 +37,15 @@ We complement our movie data by merging data from [the movie database (TMDB)](ht
 | `tmdb_original_language` | Primary language of the movie's production                |
 
 ## Methods
+Q1:
+
+Q2-1:
+
+Q2-2:
+
+Q2-3:
+(shortly discuss ethnicity genre here)
+We will
 
 ## Proposed timeline
 

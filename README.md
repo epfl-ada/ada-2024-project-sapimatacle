@@ -37,15 +37,19 @@ We complement our movie data by merging data from [the movie database (TMDB)](ht
 | `tmdb_original_language` | Primary language of the movie's production                |
 
 ## Methods
-Q1:
+### Q1:
 
-Q2-1:
+### Q2-1:
 
-Q2-2:
+### Q2-2:
 
-Q2-3:
-(shortly discuss ethnicity genre here)
-We will
+### Q2-3:
+
+By cross-referencing `Actor_ethnicity_Freebase_ID` with Wikidata, we already restored ethnicity as string. These ethnic categories, however, contains more than 400 unique entries and are not suitable for our group-level analysis. Inspired by racial groups used in [the British](https://www.ethnicity-facts-figures.service.gov.uk/style-guide/ethnic-groups/) and [the USA census](https://www.census.gov/topics/population/race/about.html), we came up with the following 7 racial groups:
+
+    Hispanic, White, Black, Asian, Native American, Middle Eastern, Others
+
+We manually mapped the ethnic categories to one of the 7 racial groups which can be found in `data/ethnicity_mapping.csv`. This racial group information is combined with tabular data
 
 ## Proposed timeline
 

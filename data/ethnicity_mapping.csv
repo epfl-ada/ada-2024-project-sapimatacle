@@ -1,7 +1,7 @@
 Ethnicity,Group
 African Americans,Black
-Omaha Tribe of Nebraska,Native Americans
-Jewish people,Others
+Omaha Tribe of Nebraska,Native American
+Jewish people,Middle Eastern
 Irish Americans,White
 Indian Americans,Asian
 Italians,White
@@ -16,7 +16,7 @@ Lithuanian Americans,White
 Black people,Black
 Italian Americans,White
 Danish Americans,White
-American Jews,Others
+American Jews,Middle Eastern
 Scottish Americans,White
 Puerto Ricans,Hispanic
 English people,White
@@ -49,7 +49,7 @@ Iranian peoples,Middle Eastern
 Mexicans,Hispanic
 Dutch Americans,White
 Hungarian Americans,White
-Spaniards,Hispanic
+Spaniards,White
 Gaud Saraswat Brahmin,Asian
 Bunt (RAJPUT),Asian
 Afghans in India,Middle Eastern
@@ -72,7 +72,7 @@ White Africans of European ancestry,White
 Americans,White
 Germans,White
 Stateside Puerto Ricans,Hispanic
-Cherokee,Native Americans
+Cherokee,Native American
 Tamil Brahmin,Asian
 Serbian Americans,White
 Dominican Americans,Hispanic
@@ -100,7 +100,7 @@ Czech Americans,White
 Jatt Sikh,Asian
 Kashmiri Pandit,Asian
 Jaat,Asian
-Black Irish,White
+Black Irish,Black
 Scottish people,White
 British Americans,White
 Norwegians,White
@@ -115,13 +115,13 @@ Albanian Americans,White
 Austrian Americans,White
 Romani people,Others
 French Americans,White
-Native Hawaiians,Native Americans
+Native Hawaiians,Native American
 Slovaks,White
 Chinese Americans,Asian
 Greek Americans,White
 Hungarians,White
 Romanichal,Others
-Parsi,Others
+Parsi,Asian
 Indonesian Americans,Asian
 Colombian Americans,Hispanic
 African-American Jews,Black
@@ -130,9 +130,9 @@ Serbs of Croatia,White
 Black Canadians,Black
 Lebanese Americans,Middle Eastern
 Anglo-Celtic Australians,White
-Pathani,Middle Eastern
+Pathani,Asian
 Swiss,White
-Aboriginal Australians,Native Americans
+Aboriginal Australians,Others
 Latvians,White
 Criollo people,Hispanic
 Norwegian Americans,White
@@ -145,14 +145,14 @@ Cubans,Hispanic
 Samoan Americans,Others
 Armenian Americans,Middle Eastern
 Afro Trinidadians and Tobagonians,Black
-Moroccan Americans,Middle Eastern
+Moroccan Americans,Black
 Irish Canadians,White
 Scottish Canadians,White
 Kannada people,Asian
-Italian Brazilians,Hispanic
+Italian Brazilians,White
 Taiwanese Americans,Asian
 English Canadians,White
-Cajun,Others
+Cajun,White
 Colombian Australian,Hispanic
 Pakistanis,Asian
 Syrian Americans,Middle Eastern
@@ -166,39 +166,39 @@ White South Africans,White
 Welsh Americans,White
 Nepali Indian,Asian
 Slavs,White
-First Nations,Native Americans
+First Nations,Native American
 مسح,Others
 Iranians in the United Kingdom,Middle Eastern
 Akan people,Black
 Croatian Canadians,White
-Māori,Native Americans
-Mizrahi Jews,Others
+Māori,Others
+Mizrahi Jews,Middle Eastern
 Black Britons,Black
 Chinese Filipino,Asian
-Pakistani Canadians,Asian
-Indigenous peoples of the Americas,Native Americans
-Native Americans in the United States,Native Americans
+Pakistani Canadians,Middle Eastern
+Indigenous peoples of the Americas,Native American
+Native Americans in the United States,Native American
 Dalmatian Italians,White
-Ashkenazi Jews,Others
+Ashkenazi Jews,White
 Romanian Americans,White
 Eurasian,Others
 Chinese Singaporeans,Asian
 Chaliyan,Asian
 Korean Americans,Asian
-Moroccan Jews,Middle Eastern
-British Jews,Others
+Moroccan Jews,Black
+British Jews,White
 Lebanese people,Middle Eastern
-Catalans,Hispanic
+Catalans,White
 Sikh,Asian
 Belarusians,White
 Niyogi,Asian
 Samoan New Zealanders,Others
-Blackfoot Confederacy,Native Americans
-British Chinese,Asian
+Blackfoot Confederacy,Native American
+British Chinese,White
 Polish Canadians,White
 Chitrapur Saraswat Brahmin,Asian
-Sámi people,Others
-Soviet people,Others
+Sámi people,White
+Soviet people,White
 Filipino Australians,Asian
 Karnataka Brahmins,Asian
 Czechs,White
@@ -211,20 +211,20 @@ Tulu people,Asian
 Serbs in the United Kingdom,White
 Kapampangan people,Asian
 Ilocano,Asian
-Ojibwe,Native Americans
+Ojibwe,Native American
 Marwari people,Asian
 Brazilian Americans,Hispanic
 German Canadians,White
 Mohyal,Asian
-Castilians,Hispanic
+Castilians,White
 Bhutia,Asian
 Iraqi Americans,Middle Eastern
 Bosniaks,White
 Filipino people of Spanish ancestry,Asian
 Sri Lankan Tamil diaspora,Asian
-Sephardi Jews,Others
+Sephardi Jews,White
 Brazilians,Hispanic
-Berber,Others
+Berber,Middle Eastern
 Serbian Canadians,White
 Israeli Americans,Middle Eastern
 Greek Canadians,White
@@ -238,31 +238,31 @@ Dutch Australian,White
 Serbs in North Macedonia,White
 Arab Americans,Middle Eastern
 Croats,White
-Galicians,Hispanic
+Galicians,White
 Palestinians in the United States,Middle Eastern
 Welsh Italians,White
 Greek Cypriots,White
 Poles in the United Kingdom,White
 Ecuadorian Americans,Hispanic
-Mohawk,Native Americans
-Inuit,Native Americans
-Sioux,Native Americans
-Lumbee,Native Americans
+Mohawk,Native American
+Inuit,Native American
+Sioux,Native American
+Lumbee,Native American
 Malaysian Chinese,Asian
 Hindkowans,Middle Eastern
 Anglo-Irish people,White
 Canadians in the United Kingdom,White
 Mangaloreans,Asian
 Slovene Americans,White
-Aromanians,Others
+Aromanians,White
 Swedish-speaking population of Finland,White
 Bulgarian Canadians,White
 Hmong Americans,Asian
 Ukrainian Americans,White
 Arabs in Bulgaria,Middle Eastern
-British Asians,Asian
+British Asians,White
 Koryo-saram,Asian
-White Latin American,Hispanic
+White Latin American,White
 Italians in the United Kingdom,White
 Burmese Americans,Asian
 Finns,White
@@ -271,7 +271,7 @@ Lao people,Asian
 Croatian Australians,White
 Vietnamese people,Asian
 Kashmiri people,Asian
-Rohilla,Asian
+Rohilla,Middle Eastern
 Hondurans,Hispanic
 South African Americans,White
 Indian diaspora in France,Asian
@@ -289,7 +289,7 @@ Sierra Leoneans in the United Kingdom,Black
 Venezuelans,Hispanic
 Mudaliar,Asian
 Sinhalese,Asian
-Cree,Native Americans
+Cree,Native American
 Cambodian Americans,Asian
 Portuguese,White
 Thai Chinese,Asian
@@ -300,53 +300,53 @@ Honduran Americans,Hispanic
 Serbian Australians,White
 Colombians,Hispanic
 Ghanaian,Black
-Hindu,Others
+Hindu,Asian
 Chileans,Hispanic
 Indo-Canadians,Asian
 Persians,Middle Eastern
 African people,Black
 Bengali Brahmins,Asian
 Swedish Canadians,White
-Sudanese Australians,Middle Eastern
+Sudanese Australians,Asian
 Vietnamese Americans,Asian
 Haitian Americans,Black
-Pakistani Americans,Asian
-Kabyle people,Others
+Pakistani Americans,Middle Eastern
+Kabyle people,Middle Eastern
 Bahamian Americans,Black
 British Jamaicans,Black
 French-speaking Quebecer,White
 Assyrian people,Middle Eastern
-Rajput,Asian
+Rajput,Others
 Turkish Americans,Middle Eastern
 Chileans in the United Kingdom,Hispanic
 Gibraltarian people,Others
 Sri Lankan Americans,Asian
 Icelanders,White
 Copts,Middle Eastern
-Choctaw,Native Americans
+Choctaw,Native American
 Louisiana Creole people,Others
 Latin American British,Hispanic
-Lithuanian Jews,Others
+Lithuanian Jews,White
 Salvadoran Americans,Hispanic
 Khatri,Asian
 Latino,Hispanic
 Nigerian Americans,Black
 Dinka people,Black
-Apache,Native Americans
+Apache,Native American
 Estonians,White
 Yugoslavs,White
 Bulgarians,White
-Five Nations,Native Americans
+Five Nations,Native American
 Somalis,Black
 Arab Mexican,Hispanic
-Ryukyuan people,Asian
+Ryukyuan people,Others
 Canadian Australian,White
-Bohemian People,White
+Bohemian People,Others
 Ukrainian Canadians,White
 Austrians in the United Kingdom,White
 Dutch Canadians,White
 Luxembourgish Americans,White
-Lebanese Mexicans,Hispanic
+Lebanese Mexicans,Middle Eastern
 Iranian Americans,Middle Eastern
 Mandinka people,Black
 Tibetan people,Asian
@@ -360,69 +360,69 @@ Filipino mestizo,Asian
 Indian Australian,Asian
 Punjabi diaspora,Asian
 Armenians in Italy,Middle Eastern
-Serbs of Bosnia and Herzegovina,White
+Serbs of Bosnia and Herzegovina,Middle Eastern
 Manchu,Asian
 Buryats,Asian
-Cheyennes,Native Americans
+Cheyennes,Native American
 Québécois,White
 Armenians of Russia,Middle Eastern
-Dene,Native Americans
+Dene,Native American
 multiracial people,Others
-Spaniards in Mexico,Hispanic
-Romani people in Spain,Others
+Spaniards in Mexico,White
+Romani people in Spain,Asian
 Chettiar,Asian
 Baltic Russians,White
-Iñupiaq people,Native Americans
+Iñupiaq people,Native American
 Transylvanian Saxons,White
 Greek Australians,White
 Latvian Americans,White
 Panamanian Americans,Hispanic
 Dalit,Asian
-Afro-Asians,Others
+Afro-Asians,Black
 Venezuelan Americans,Hispanic
-Indo Caribbeans,Others
+Indo Caribbeans,Asian
 British African-Caribbean people,Black
-Tatars,Others
+Tatars,Asian
 Tejano,Hispanic
 Lebanese people in the United Kingdom,Middle Eastern
-Métis,Others
+Métis,Black
 Ossetians,Others
 Thai Americans,Asian
-German Brazilians,Hispanic
+German Brazilians,White
 Arabs,Middle Eastern
 Zhuang people,Asian
-Italian immigration to Mexico,Hispanic
+Italian immigration to Mexico,White
 Danish Canadians,White
 Manx people,White
 Japanese Brazilians,Asian
 Indian diaspora,Asian
-Ho-Chunk,Native Americans
+Ho-Chunk,Native American
 Greeks in the United Kingdom,White
 Barbadian Americans,Black
 Wolof people,Black
 culture of Palestine,Middle Eastern
 Czech Australians,White
-Israeli Jews,Others
+Israeli Jews,Middle Eastern
 Slovenes,White
-Nez Perce,Native Americans
+Nez Perce,Native American
 Swedish Australian,White
 Afro-Guyanese,Black
 Dogra,Asian
 Kurds,Middle Eastern
 Basque people,White
-Black Hispanic and Latino Americans,Black
-Gin people,Others
-Indo-Guyanese,Others
+Black Hispanic and Latino Americans,Hispanic
+Gin people,Asian
+Indo-Guyanese,Asian
 Hazaras,Middle Eastern
-Hutsuls,Others
-Aymara,Native Americans
-Oneida,Native Americans
+Hutsuls,White
+Aymara,Hispanic
+Oneida,White
 Azerbaijanis,Middle Eastern
 Bangladeshi Americans,Asian
 Thai people,Asian
 Iranian Canadians,Middle Eastern
 Afrikaners,White
-peoples of the Caucasus,Others
+peoples of the Caucasus,White
 Sierra Leone Creole people,Black
-Georgians,Others
+Georgians,White
 Goans,Asian

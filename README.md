@@ -20,9 +20,9 @@ Following the objectives discussed in the abstract, here is the list of concrete
 
     4. From which regions of the world do most franchises come from, and what are the dominant collaboration fluxes between countries? Does it differ a lot from non-franchised movies? Are there parts of the world that mostly create single movies instead of movie series? Are there some parts of the world that interact more often when creating sagas of movies? Are there recurrent bonds that can be identified? And finally, do some features regarding countries of origin have a link with movie revenue and reviews ?
 
-## **Proposed additional dataset**
+## Proposed additional dataset
 
-We complement our movie data by merging data from [the movie database (TMDB)](https://www.themoviedb.org/). This community-based movie database offers free API for non-commercial use, and we used the database to identify franchise movies in the CMU dataset. We also queried additional features for each movie to utilize them in our analysis. The table below shows the summary of newly added features: ⇒ 307
+We complement our movie data by merging data from [the movie database (TMDB)](https://www.themoviedb.org/). This community-based movie database offers free API for non-commercial use, and we used the database to identify franchise movies in the CMU dataset. We also queried additional features for each movie to utilize them in our analysis. The table below shows the summary of newly added features:
 
 | **Feature**             | **Description**                                                   |
 |--------------------------|-------------------------------------------------------------------|
@@ -38,11 +38,11 @@ We complement our movie data by merging data from [the movie database (TMDB)](ht
 | `tmdb_origin_country`   | Country where the movie was produced                            |
 | `tmdb_original_language`| Primary language of the movie's production                      |
 
-We decided to add this dataset and the mentionned features as they seem relevant to answer our research questions, and that the given data set had some issues, such as the genres proposed, which were very specific (this is shown in results.ipynb), not usable, and that needed to be grouped together. 
+We decided to add this dataset and the mentionned features as they seem relevant to answer our research questions, and that the given data set had some issues, such as the genres proposed, which were very specific (this is shown in results.ipynb), not usable, and that needed to be grouped together.
 
-## **Methods**
+## Methods
 
-### Q1 :
+### Q1:
 
 Franchise movies have higher box office revenue than non franchise ones (statistical significance), but the analysis on the box office shows that a positive linear correlation exists between the movie budget and its box office revenue. We did see that multiple data are missing, so using the added data set would be recommended. After putting some though on how to compare the box-office revenue between movies, we realized that as a movie budget and revenue are positively correlated, a comparaison of the ratio of those values towards movies in the franchise would be more accurate. The next steps would be to look at an eventual correlation between this ratio and the reviews ; as well as looking at how these values differ depending on the order of the movies in a franchise, and whether they are statistically significant or not. (102)
 
@@ -82,31 +82,49 @@ The maps show one node for each country of the dataset (or regions for more clar
 
 Do connections increase the box office revenue of the movies? Is the effect significant? And significantly different from non-franchise movies?
 
-## **Proposed timeline**
+## Proposed timeline
 
-- Until P2 (Nov. 15): the preliminary analysis of the different data we have such as genre, box office revenue, character data, etc.
-- (Nov. 15 - Nov. 22): after this analysis, update the research question if new ones emerge and dive deeper into those question
-- (Nov. 22 - Nov. 29): Finalize all our analysis, at least have rough figures
-- (Dec. 6 -): We will start creating the website. We plan to use Jekyll for the desing.
+### Until P2 (Nov. 15):
+
+The preliminary analysis of the different data we have such as genre, box office revenue, character data, etc.
+
+### Nov. 15 - Nov. 22:
+
+We separate work as described in the next section, and continue working on the analyis to answer every single aspect of our research questions.
+
+### Nov. 22-29:
+
+Start creating the decision tree, reflect on other possible features to create the best second movie, or sequel, that might be valuable.
+
+### Nov. 29 - Dec. 6:
+
+A week dedicated to HW2. No work on the project.
+
+### Dec. 6-13:
+
+Some of us will start creating the website, the plan is to use Jekyll for the desing. All the visualization we use in the website should be finalized by the end of this week.
+
+### Dec. 13-20:
+
+Writing the data story, remarks and conclusion of the project on the web site
 
 ## **Organization within the team**
 
-- Takuya was in charge of downloading TMDB dataset and also preprocessing and the preliminary analysis of character data
-- Maylis will work on the movie genres and their subsequent analysis
-- Salomé will work on analyzing if there is a correlation between box office revenue, budget, its ratio and other feature of a movie.
-- Clément will be in charge of finalising the research about countries and regions, and will directly focus on building the website using Jekyll.
-- Pierre will work on the timeline visualisation and the research of the significant parameter and their influence.
+- **Takuya** was in charge of downloading TMDB dataset and also preprocessing and the preliminary analysis of character data
+- **Maylis** will work on the movie genres and their subsequent analysis
+- **Salomé** will work on analyzing if there is a correlation between box office revenue, budget, its ratio and other feature of a movie.
+- **Clément** will be in charge of finalising the research about countries and regions, and will directly focus on building the website using Jekyll.
+- **Pierre** will work on the timeline visualisation and the research of the significant parameter and their influence.
 
-## **Questions for TAs**
- 
+## Usage
 
-## **Usage**
+### Package installation
+From the project root, please run:
+```
+conda install --file requirements.txt
+```
 
-### **Package installation**
-
-Conda installation
-
-### **Fetching TMDB data**
+### Fetching TMDB data
 
 1. Make sure that `movie.metadata.tsv` is in `data/`. The CMU dataset can be downloaded from [this link](https://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz).
 

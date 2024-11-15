@@ -1,4 +1,4 @@
-name: ada
+name: test
 channels:
   - defaults
 dependencies:

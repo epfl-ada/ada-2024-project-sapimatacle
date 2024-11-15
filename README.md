@@ -2,76 +2,122 @@
 
 ## Abstract
 
-We often hear that the second movie in a franchise is always worse than the first. However, human memories tend to be influenced by nostalgia, and it remains uncertain if this classic dinner table debate stands on tangible evidence. In this project, we aim to settle this debate by analyzing the list of movies and supplemental data from [the CMU Movie Summary Corpus](https://www.cs.cmu.edu/~ark/personas/). The preliminary question to this analysis is, "What makes a good movie?" Are franchise movies more profitable than non-franchise movies? In search of answers to these questions, we investigate various metrics such as box office revenue, viewer rating, diversity representation etc., for franchise movies and make a contrast to non-franchise movies.
+We often hear that the second movie in a franchise is always worse than the first. However, human memories tend to be influenced by nostalgia, and it remains uncertain if this classic dinner table debate stands on tangible evidence. In this project, we aim to settle this debate by analyzing the list of movies and supplemental data from [the CMU Movie Summary Corpus](https://www.cs.cmu.edu/~ark/personas/). The preliminary questions to this analysis are, "What makes a good franhcise movie?" and “Are franchise movies more profitable than non-franchise movies?”. In search of answers to these questions, we investigate various metrics such as box office revenue, viewer rating, diversity representation etc., for franchise movies and make a contrast to non-franchise movies.
+
+---
 
 ## Research Questions
 
 Following the objectives discussed in the abstract, here is the list of concrete questions to tackle with:
+1. **Do franchise movies degrade in quality and box office revenue as the sequel continues?**
 
-Q1: Do franchise movies degrade in quality and box office revenue as the sequel continues?
+2. **Is there an underlying pattern of features that makes franchise movies successful? If so, what makes franchise movies different from non-franchise movies?**
+    1. Do some movie genres achieve higher box office revenue in movie franchise than the others? Is the trend consistent in non-franchise movies as well?
 
-Q2: Is there an underlying pattern of features that makes franchise movies successful?
+    2. Does the length and the number of movies impact the success of a franchise and how does it evolves in the franchise?
 
-1. Do some movie genres achieve higher box office revenue in moive franchise than the others? Is the trend consistent in non-franchise movies as well?
+    3. Do actors of certain ethnicity/gender groups play particular personas more frequently? Are they depicted positively (hero/heroine) or negatively (villain) in the movie?
 
-2. What are the features that are most useful in predicting box office revenue?
+    4. From which regions of the world do most franchises come from, and what are the dominant collaboration fluxes between countries? Does it differ a lot from non-franchised movies? Are there parts of the world that mostly create single movies instead of movie series? Are there some parts of the world that interact more often when creating sagas of movies? Are there recurrent bonds that can be identified? And finally, do some features regarding countries of origin have a link with movie revenue and reviews ?
 
-3. Do actors of certain ethnicity groups play particular personas more frequently? Are they depicted positively (hero/heroine) or negatively (villain) in the movie?
-  
-## Proposed additional dataset
+## **Proposed additional dataset**
 
-We complement our movie data by merging data from [the movie database (TMDB)](https://www.themoviedb.org/). This community-based movie database offers free API for non-commercial use, and we used the database to identify franchise movies in the CMU dataset. We also queried additional features for each movie to utilize them in our analysis. The table below shows the summary of newly added features:
+We complement our movie data by merging data from [the movie database (TMDB)](https://www.themoviedb.org/). This community-based movie database offers free API for non-commercial use, and we used the database to identify franchise movies in the CMU dataset. We also queried additional features for each movie to utilize them in our analysis. The table below shows the summary of newly added features: ⇒ 307
 
-| **Feature**                | **Description**                                                   |
-|--------------------------|---------------------------------------------------------------|
-| `tmdb_id`                | Unique movie ID for TMDB     |
-| `collection_name`        | Franchise name|
-| `collection_id`          | Unique ID for the franchise|
-| `vote_count`             | Total number of votes the movie received on TMDB               |
-| `vote_average`           | Average rating score based on user votes on TMDB                |
-| `genres`                 | Genre(s) the movie belongs to                             |
-| `budget`                 | Production budget of the movie                            |
-| `revenue`                | Revenue generated by the movie                            |
-| `run_time`               | Total runtime of the movie in minutes                     |
-| `tmdb_origin_country`    | Country where the movie was produced                      |
-| `tmdb_original_language` | Primary language of the movie's production                |
+| **Feature**             | **Description**                                                   |
+|--------------------------|-------------------------------------------------------------------|
+| `tmdb_id`               | Unique movie ID for TMDB                                         |
+| `collection_name`       | Franchise name                                                  |
+| `collection_id`         | Unique ID for the franchise                                     |
+| `vote_count`            | Total number of votes the movie received on TMDB                |
+| `vote_average`          | Average rating score based on user votes on TMDB                |
+| `genres`                | Genre(s) the movie belongs to                                   |
+| `budget`                | Production budget of the movie                                  |
+| `revenue`               | Revenue generated by the movie                                  |
+| `run_time`              | Total runtime of the movie in minutes                           |
+| `tmdb_origin_country`   | Country where the movie was produced                            |
+| `tmdb_original_language`| Primary language of the movie's production                      |
 
-## Methods
-### Q1:
+We decided to add this dataset and the mentionned features as they seem relevant to answer our research questions, and that the given data set had some issues, such as the genres proposed, which were very specific (this is shown in results.ipynb), not usable, and that needed to be grouped together. 
 
-### Q2-1:
+## **Methods**
 
-### Q2-2:
+### Q1 :
 
-### Q2-3:
+Franchise movies have higher box office revenue than non franchise ones (statistical significance), but the analysis on the box office shows that a positive linear correlation exists between the movie budget and its box office revenue. We did see that multiple data are missing, so using the added data set would be recommended. After putting some though on how to compare the box-office revenue between movies, we realized that as a movie budget and revenue are positively correlated, a comparaison of the ratio of those values towards movies in the franchise would be more accurate. The next steps would be to look at an eventual correlation between this ratio and the reviews ; as well as looking at how these values differ depending on the order of the movies in a franchise, and whether they are statistically significant or not. (102)
 
-By cross-referencing `Actor_ethnicity_Freebase_ID` with Wikidata, we already restored ethnicity as string. These ethnic categories, however, contains more than 400 unique entries and are not suitable for our group-level analysis. Inspired by racial groups used in [the British](https://www.ethnicity-facts-figures.service.gov.uk/style-guide/ethnic-groups/) and [the USA census](https://www.census.gov/topics/population/race/about.html), we came up with the following 7 racial groups:
+### Q2:
 
-    Hispanic, White, Black, Asian, Native American, Middle Eastern, Others
+To know which underlying pattern of features makes franchise movies successful, we first want to look at the parameters that are at play: we want to see if they are usable for our analysis, and if they have any influence on reviews or revenues at all. Then, once this is done, we could use decision trees to try to predict whether, depending on the budget, the genre, and all the other columns in our dataset for a given movie, the studio how to produce the more successful second movie choosing the best feature.  
 
-We manually mapped the ethnic categories to one of the 7 racial groups which can be found in `data/ethnicity_mapping.csv`. This racial group information is combined with tabular data
+### Q2-1
 
-## Proposed timeline
+We can look at violin plots of revenue normalized by budget (Q1) depending on the genres, and do the same for non-franchise movies. To know better how the genres interacts, and how their interactions affect the revenue, we could plot a heatmap of how often genres are paired together. We can then see if the ones more frequent in franchise movies perform better or not: if an under-represented genre in the franchise movies subset performs better than others, are they less frequent because they are paired? This can be answered by looking at the plots mentionned above.
 
-## Organization within the team
-* Takuya will work on
+We could also do the same for movie reviews to answer these questions: which genres are more appreciated? Are they the same for franchise and non-franchise movies? Is there a link between genre movie production and review?
 
-## Questions for TAs (optional)
+### Q2-2
 
-## Usage
+To identify patterns in the size and duration of a franchise, a timeline plot was created for all franchises. Due to the large number of franchises, sorting, filtering, and coloring options will be provided. The goal is to subcategorise franchises for more detailed analysis, as examining all franchises together tends to yield less clear results. These results can be observed with the average vote as a function of the franchise length or the average vote within a franchise.
+The next goal is to perform different correlation tests in subgroups between parameters of a franchise and their success to determine them.
 
-### Package installation
+### Q2-3
+
+By cross-referencing `Actor_ethnicity_Freebase_ID` with Wikidata, we restored >400 unique categories. Inspired by racial groups used in [the British](https://www.ethnicity-facts-figures.service.gov.uk/style-guide/ethnic-groups/) and [the USA census](https://www.census.gov/topics/population/race/about.html), we came up with the following 7 racial groups into which we manually map these ethnicity categories:
+
+```
+Hispanic, White, Black, Asian, Native American, Middle Eastern, Others
+
+```
+
+This grouping (`data/ethnicity_mapping.csv)`can be not only combined with actor analysis using movie plot, but also can be useful in tabular data analysis (`data/movie_metadata_with_tmdb.csv`). To analyze casting bias in the movie industry, we ran sentiment analysis on words that describes characters in movie plots. We plan to utilize the pert-of-speech tagging from the [spaCy package](https://spacy.io/) for extraction, combined with a transformer-based pretrained language model.
+
+### 
+
+### Q2-5
+
+The idea is to compare two networked maps of the world; one considering only franchised movies, the other considering all movies in the dataset. 
+
+The maps show one node for each country of the dataset (or regions for more clarity) and the connections between them. For each movie with a pair of origin countries, a connection is created. When a movie has multiple countries of origin, multiple pairs are created.
+
+Do connections increase the box office revenue of the movies? Is the effect significant? And significantly different from non-franchise movies?
+
+## **Proposed timeline**
+
+- Until P2 (Nov. 15): the preliminary analysis of the different data we have such as genre, box office revenue, character data, etc.
+- (Nov. 15 - Nov. 22): after this analysis, update the research question if new ones emerge and dive deeper into those question
+- (Nov. 22 - Nov. 29): Finalize all our analysis, at least have rough figures
+- (Dec. 6 -): We will start creating the website. We plan to use Jekyll for the desing.
+
+## **Organization within the team**
+
+- Takuya was in charge of downloading TMDB dataset and also preprocessing and the preliminary analysis of character data
+- Maylis will work on the movie genres and their subsequent analysis
+- Salomé will work on analyzing if there is a correlation between box office revenue, budget, its ratio and other feature of a movie.
+- Clément will be in charge of finalising the research about countries and regions, and will directly focus on building the website using Jekyll.
+- Pierre will work on the timeline visualisation and the research of the significant parameter and their influence.
+
+## **Questions for TAs**
+ 
+
+## **Usage**
+
+### **Package installation**
 
 Conda installation
 
-### Fetching TMDB data
+### **Fetching TMDB data**
 
 1. Make sure that `movie.metadata.tsv` is in `data/`. The CMU dataset can be downloaded from [this link](https://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz).
+
 2. Obtain an API key from TMDB. Please follow the instruction on [this webpage](https://developer.themoviedb.org/docs/getting-started).
+
 3. Create `data/constants.py` and add the following:
 
 ```python
+
 API_KEY = "YOUR_API_KEY"
+
 ```
 
 4. From the root, run `python fetch_data_from_tmdb.py`. This will create `data/movie_metadata_with_tmdb.csv`. Note that the run will take 2-3 hours, depending on your Internet connection.

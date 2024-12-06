@@ -1,10 +1,11 @@
 import time
 import pandas as pd
 import numpy as np
-from SPARQLWrapper import SPARQLWrapper, JSON
+#from SPARQLWrapper import SPARQLWrapper, JSON
 from collections import Counter
 import requests
 from bs4 import BeautifulSoup
+import ast
 
 
 def get_inflation_rate(): 
@@ -96,6 +97,9 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
     data['genres'] = data['genres'].apply(extract_genres)
 
     return data
+
+def get_clean_franchise_movies(data: pd.DataFrame):
+    col_for_dropna =['profit','real_budget','real_revenue','real_profit','CPI','release_year','movie_order','genres']
 
 def get_franchise_data(data: pd.DataFrame):
     """Return franchise data.

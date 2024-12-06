@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from SPARQLWrapper import SPARQLWrapper, JSON
 from collections import Counter
+import requests
+from bs4 import BeautifulSoup
 
 def get_franchise_movies(data: pd.DataFrame):
     """Return movies that are part of a franchise and have more than one movie in the franchise.
@@ -227,4 +229,34 @@ def get_labels_from_freebase_ids(freebase_ids):
     labels = {result["freebase_id"]["value"]: result["label"]["value"] for result in results["results"]["bindings"]}
     
     return labels
+
+
+URL ='https://www.minneapolisfed.org/about-us/monetary-policy/inflation-calculator/consumer-price-index-1800-'
+
+
+def get_inflation_rate(URL): 
+    r = requests.get(URL)
+    page_body = r.text
+    soup = BeautifulSoup(page_body, 'html.parser')
+    table = soup.find('table')
+    table_rows = table.find_all('tr')
+    data = []
+    for tr in table_rows:
+        td = tr.find_all('td')
+        row = [i.text for i in td]
+        data.append(row)
+
+    inflation_rate = pd.DataFrame(data, columns=["Year", "CPI","anuel_inflation_rate"])
+    # Drop the first row (columns names)
+    inflation_rate = inflation_rate.drop(0).reset_index(drop=True)
+
+    # Clean up the data by removing newline characters and extra spaces
+    inflation_rate['Year'] = inflation_rate['Year'].str.strip().str.replace('\n', '')
+    inflation_rate['CPI'] = inflation_rate['CPI'].str.strip().str.replace('\n', '').astype(float)
+
+    inflation_rate['Year'] = pd.to_numeric(inflation_rate['Year'])
+    inflation_rate['CPI'] = pd.to_numeric(inflation_rate['CPI'])
+
+    return inflation_rate
+
 

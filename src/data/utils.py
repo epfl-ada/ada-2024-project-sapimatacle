@@ -6,11 +6,38 @@ from collections import Counter
 import requests
 from bs4 import BeautifulSoup
 
-def get_franchise_movies(data: pd.DataFrame):
+URL ='https://www.minneapolisfed.org/about-us/monetary-policy/inflation-calculator/consumer-price-index-1800-'
+
+def get_inflation_rate(URL): 
+    r = requests.get(URL)
+    page_body = r.text
+    soup = BeautifulSoup(page_body, 'html.parser')
+    table = soup.find('table')
+    table_rows = table.find_all('tr')
+    data = []
+    for tr in table_rows:
+        td = tr.find_all('td')
+        row = [i.text for i in td]
+        data.append(row)
+
+    inflation_rate = pd.DataFrame(data, columns=["Year", "CPI","anuel_inflation_rate"])
+    # Drop the first row (columns names)
+    inflation_rate = inflation_rate.drop(0).reset_index(drop=True)
+
+    # Clean up the data by removing newline characters and extra spaces
+    inflation_rate['Year'] = inflation_rate['Year'].str.strip().str.replace('\n', '')
+    inflation_rate['CPI'] = inflation_rate['CPI'].str.strip().str.replace('\n', '').astype(float)
+
+    inflation_rate['Year'] = pd.to_numeric(inflation_rate['Year'])
+    inflation_rate['CPI'] = pd.to_numeric(inflation_rate['CPI'])
+
+    return inflation_rate
+
+def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
     """Return movies that are part of a franchise and have more than one movie in the franchise.
     Args:
         data: pandas dataframe of 'data/movie_metadata_with_tmdb.csv'
-
+        data_2: pandas dataframe of the inflation rate from the web sit of the Federal Reserve Bank of Minneapolis
     Returns:
         pd.DataFrame: Franchise movies.
     """
@@ -46,6 +73,18 @@ def get_franchise_movies(data: pd.DataFrame):
 
     # replace the 0 values with nan for the buget column
     data['budget'] = data['budget'].apply(lambda x: np.nan if x==0 else x)
+
+    #number of movies in each collection
+    data['number_movie_collection'] = data.groupby('collection_id').count()
+
+    #tacking into account inflation for revenue and budget 
+    data['CPI'] = pd.merge(data, data_2['CPI'], how='left', left_on=data['release_year'], right_on=data_2['Year'])
+    base_year_cpi= data_2.loc[data_2['Year'] == 2024, 'CPI'].iloc[0] #base year 2024
+    #Real Price = Nominal Price (at the time) × CPI in Base Year / CPI in Year of Price
+    data['real_revenue']= data['box_office']*base_year_cpi/data['CPI'].iloc[0]
+    data['real_budget']= data['budget']*base_year_cpi/data['CPI'].iloc[0]
+    data['real_profit']= data['box_office'] - data['budget']
+
     return data
 
 def get_franchise_data(data: pd.DataFrame):
@@ -258,32 +297,6 @@ def get_labels_from_freebase_ids(freebase_ids):
     return labels
 
 
-URL ='https://www.minneapolisfed.org/about-us/monetary-policy/inflation-calculator/consumer-price-index-1800-'
 
-
-def get_inflation_rate(URL): 
-    r = requests.get(URL)
-    page_body = r.text
-    soup = BeautifulSoup(page_body, 'html.parser')
-    table = soup.find('table')
-    table_rows = table.find_all('tr')
-    data = []
-    for tr in table_rows:
-        td = tr.find_all('td')
-        row = [i.text for i in td]
-        data.append(row)
-
-    inflation_rate = pd.DataFrame(data, columns=["Year", "CPI","anuel_inflation_rate"])
-    # Drop the first row (columns names)
-    inflation_rate = inflation_rate.drop(0).reset_index(drop=True)
-
-    # Clean up the data by removing newline characters and extra spaces
-    inflation_rate['Year'] = inflation_rate['Year'].str.strip().str.replace('\n', '')
-    inflation_rate['CPI'] = inflation_rate['CPI'].str.strip().str.replace('\n', '').astype(float)
-
-    inflation_rate['Year'] = pd.to_numeric(inflation_rate['Year'])
-    inflation_rate['CPI'] = pd.to_numeric(inflation_rate['CPI'])
-
-    return inflation_rate
 
 

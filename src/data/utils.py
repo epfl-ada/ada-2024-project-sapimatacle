@@ -33,6 +33,13 @@ def get_inflation_rate():
 
     return inflation_rate
 
+def extract_genres(genres_str):
+    try:
+        genres_list = ast.literal_eval(genres_str)
+        return [genre['name'] for genre in genres_list]
+    except (ValueError, SyntaxError):
+        return []
+
 def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
     """Return movies that are part of a franchise and have more than one movie in the franchise.
     Args:
@@ -84,6 +91,9 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
     data['real_revenue']= data['box_office']*base_year_cpi/data['CPI'].iloc[0]
     data['real_budget']= data['budget']*base_year_cpi/data['CPI'].iloc[0]
     data['real_profit']= data['box_office'] - data['budget']
+
+    # Clean the genres 
+    data['genres'] = data['genres'].apply(extract_genres)
 
     return data
 

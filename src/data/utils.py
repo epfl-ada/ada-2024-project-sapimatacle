@@ -14,11 +14,38 @@ def get_franchise_movies(data: pd.DataFrame):
     Returns:
         pd.DataFrame: Franchise movies.
     """
+
+    # Only take the movies that have a collection id
     has_muliple = data.groupby('collection_id').count()['tmdb_id']>1
     valid_idx = has_muliple[has_muliple].index
     data = data[data['collection_id'].isin(valid_idx)].reset_index(drop=True)
+
+    # Correct the release date
     data['Movie release date corrected'] = pd.to_datetime(data['Movie release date'],format='mixed',yearfirst=True)
+
+    # add a column with the release year
     data['release_year'] = data['Movie release date corrected'].dt.year
+
+    # add a collmn with the numerotation of the movies in the collection by release date order
+    data['movie_order'] = data.groupby('collection_name')['Movie release date corrected'].rank(method='first')
+
+    # box office merge and drop the original columns
+    data['box_office']=data['Movie box office revenue'].apply(lambda x: x if x!=np.nan else data['revenue'])
+    data.drop(columns=['Movie box office revenue','revenue'],inplace=True)
+
+    # add a profit column
+    data['profit'] = data['box_office'] - data['budget']
+
+    # add a column withe the years between the movies of the same collection
+    data["years_diff_bt_pre_movies"] = (
+        data.groupby("collection_id", group_keys=False)
+        .apply(lambda group: group.sort_values("movie_order"))
+        .groupby("collection_id")["release_year"]
+        .diff()
+    )
+
+    # replace the 0 values with nan for the buget column
+    data['budget'] = data['budget'].apply(lambda x: np.nan if x==0 else x)
     return data
 
 def get_franchise_data(data: pd.DataFrame):

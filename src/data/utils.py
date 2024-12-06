@@ -1,21 +1,3 @@
-# -*- coding: utf-8 -*-
-# ---
-# jupyter:
-#   jupytext:
-#     cell_metadata_filter: -all
-#     custom_cell_magics: kql
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.11.2
-#   kernelspec:
-#     display_name: ada
-#     language: python
-#     name: python3
-# ---
-
-# %%
 import time
 import pandas as pd
 import numpy as np
@@ -24,10 +6,6 @@ from collections import Counter
 import requests
 from bs4 import BeautifulSoup
 
-# %%
-
-# %%
-def get_inflation_rate(URL): 
 
 def get_inflation_rate(): 
     URL ='https://www.minneapolisfed.org/about-us/monetary-policy/inflation-calculator/consumer-price-index-1800-'
@@ -55,7 +33,6 @@ def get_inflation_rate():
 
     return inflation_rate
 
-# %%
 def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
     """Return movies that are part of a franchise and have more than one movie in the franchise.
     Args:
@@ -110,7 +87,6 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
 
     return data
 
-# %%
 def get_franchise_data(data: pd.DataFrame):
     """Return franchise data.
     Args:
@@ -256,16 +232,10 @@ def get_franchise_data(data: pd.DataFrame):
     return franchise_data
 
 
-# %%
-franchise_df = get_franchise_data():
-
-
-# %%
 col_for_dropna = ['Wikipedia_movie_ID', 'Freebase_movie_ID', 'Movie_release_date',
                   'Actor_gender', 'Actor_name', 'Freebase_character_actor_map_ID',
                   'Freebase_actor_ID']
 
-# %%
 def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: list =col_for_dropna):
     """Drop rows if specified columns have missing values. Also add 
     Args:
@@ -290,7 +260,6 @@ def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: lis
     character_df["racial_group"] = character_df.ethnicity.map(ethnicity_to_race_dict)
     return character_df
 
-# %%
 def custom_autopct(values):
     def my_autopct(pct):
         total = sum(values)
@@ -298,7 +267,6 @@ def custom_autopct(values):
         return '{p:.1f}%\n({v:d})'.format(p=pct,v=val)
     return my_autopct
 
-# %%
 def get_labels_from_freebase_ids(freebase_ids):
     # Initialize SPARQL wrapper for the Wikidata endpoint
     sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
@@ -328,7 +296,7 @@ def get_labels_from_freebase_ids(freebase_ids):
     
     return labels
 
-# %%
 
-# %%
+
+
 

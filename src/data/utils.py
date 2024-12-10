@@ -114,13 +114,9 @@ def get_franchise_data(data: pd.DataFrame):
     franchise_movie_count = data.groupby('collection_id').count()['tmdb_id']
     franchise_length = (franchise_newest_release - franchise_oldest_release).dt.days
     franchise_length_years = (franchise_length / 365).round(0)
-    franchise_revenue = data.groupby('collection_id').apply(
-        lambda x: np.nan if x[['Movie box office revenue', 'revenue']].isnull().any().any() else (
-            x['Movie box office revenue'].sum() if x['Movie box office revenue'].notnull().all() else (
-                x['revenue'].sum() if x['revenue'].notnull().all() else 0
-            )
-        )
-    ).astype(float)
+    franchise_average_years_bt_movies = franchise_length_years / (franchise_movie_count-1)
+    franchise_revenue = data.groupby('collection_id')['real_revenue'].apply(lambda x: x.sum() if x.notna().all() else np.nan)
+    franchise_genre = data.groupby('collection_id')['genres'].apply(lambda x: ', '.join(set([genre for sublist in x for genre in sublist])))
     franchise_country = data.groupby('collection_id')['Movie countries (Freebase ID:name tuples)'].apply(lambda x: ', '.join(x.unique()))
     # Extract the country names from the dictionary strings
     franchise_country = franchise_country.apply(lambda x: ', '.join([country.split(': "')[1].split('"')[0] for country in x.split(', ') if ': "' in country]))
@@ -233,9 +229,11 @@ def get_franchise_data(data: pd.DataFrame):
     franchise_data = pd.DataFrame({
         'collection_id': franchise_oldest_release.index,
         'collection_name': data.groupby('collection_id')['collection_name'].first(),
+        'genres': franchise_genre.values,
         'oldest_release': franchise_oldest_release.values,
         'newest_release': franchise_newest_release.values,
         'movie_count': franchise_movie_count.values,
+        'average_years_bt_movies': franchise_average_years_bt_movies.values,
         'franchise_length': franchise_length,
         'franchise_length_years': franchise_length_years,
         'revenue': franchise_revenue.values,

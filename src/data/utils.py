@@ -103,6 +103,43 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
 
     return data
 
+def get_movie(data: pd.DataFrame, data_2: pd.DataFrame):
+    """Return movies with the same features as the franchise movies. 
+    Args:
+        data: pandas dataframe of 'data/movie_metadata_with_tmdb.csv'
+        data_2: pandas dataframe of the inflation rate from the web sit of the Federal Reserve Bank of Minneapolis
+    Returns:
+        pd.DataFrame: Franchise movies.
+    """
+    # Correct the release date
+    data['Movie release date corrected'] = pd.to_datetime(data['Movie release date'],format='mixed',yearfirst=True, errors='coerce')
+
+    # add a column with the release year
+    data['release_year'] = data['Movie release date corrected'].dt.year
+
+    # box office merge and drop the original columns
+    data['box_office']=data['Movie box office revenue'].apply(lambda x: x if x!=np.nan else data['revenue'])
+    data.drop(columns=['Movie box office revenue','revenue'],inplace=True)
+
+    # add a profit column
+    data['profit'] = data['box_office'] - data['budget']
+
+    # replace the 0 values with nan for the buget column
+    data['budget'] = data['budget'].apply(lambda x: np.nan if x==0 else x)
+
+    #tacking into account inflation for revenue and budget
+    data['CPI'] = data.merge(data_2[['Year', 'CPI']], how='left', left_on='release_year', right_on='Year')['CPI']
+    base_year_cpi= data_2.loc[data_2['Year'] == 2024, 'CPI'].iloc[0] #base year 2024
+    #Real Price = Nominal Price (at the time) × CPI in Base Year / CPI in Year of Price
+    data['real_revenue']= data['box_office']*base_year_cpi/data['CPI'].iloc[0]
+    data['real_budget']= data['budget']*base_year_cpi/data['CPI'].iloc[0]
+    data['real_profit']= data['box_office'] - data['budget']
+
+    # Clean the genres 
+    data['genres'] = data['genres'].apply(extract_genres)
+
+    return data
+
 def get_clean_franchise_movies(data: pd.DataFrame):
     col_for_dropna =['profit','real_budget','real_revenue','real_profit','CPI','release_year','movie_order','genres']
 

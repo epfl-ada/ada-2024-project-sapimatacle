@@ -49,6 +49,11 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
     Returns:
         pd.DataFrame: Franchise movies.
     """
+    # Open the missing_dates_manualsearch.csv file
+    missing_dates = pd.read_csv('ada-2024-project-sapimatacle/data/missing_dates_manualsearch.csv')
+
+    # Merge the missing_dates with the data
+    data = data.merge(missing_dates[['Wikipedia movie ID','Movie release date']], how='left', on='Wikipedia movie ID')
 
     # Only take the movies that have a collection id
     has_muliple = data.groupby('collection_id').count()['tmdb_id']>1
@@ -116,6 +121,7 @@ def get_franchise_data(data: pd.DataFrame):
     franchise_length_years = (franchise_length / 365).round(0)
     franchise_average_years_bt_movies = franchise_length_years / (franchise_movie_count-1)
     franchise_revenue = data.groupby('collection_id')['real_revenue'].apply(lambda x: x.sum() if x.notna().all() else np.nan)
+    franchise_revenue_avg= franchise_revenue/franchise_movie_count
     franchise_genre = data.groupby('collection_id')['genres'].apply(lambda x: ', '.join(set([genre for sublist in x for genre in sublist])))
     franchise_country = data.groupby('collection_id')['Movie countries (Freebase ID:name tuples)'].apply(lambda x: ', '.join(x.unique()))
     # Extract the country names from the dictionary strings
@@ -237,6 +243,7 @@ def get_franchise_data(data: pd.DataFrame):
         'franchise_length': franchise_length,
         'franchise_length_years': franchise_length_years,
         'revenue': franchise_revenue.values,
+        'revenue_avg': franchise_revenue_avg.values,
         'country': franchise_country.values,
         'region': franchise_region.values,
         'average_score': franchise_average_score.values

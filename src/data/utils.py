@@ -357,7 +357,23 @@ def get_labels_from_freebase_ids(freebase_ids):
     
     return labels
 
+def get_genre_counts(data = pd.DataFrame):
+    genre_counts = Counter()
 
+    for genres in data['Movie genres (Freebase ID:name tuples)']:
+        if pd.notnull(genres):
+            # Split the genres by comma and strip any extra spaces
+            genre_list = [genre.split(":")[1].strip().replace("}", "") for genre in genres.split(",") if ":" in genre]
+            genre_counts.update(genre_list)
+    
+    genre_counts_df = pd.DataFrame.from_dict(genre_counts, orient='index', columns=['counts']).reset_index()
+    genre_counts_df.columns = ['genre', 'counts']
+    genre_counts_df['genre']=genre_counts_df['genre'].str.replace('}','')
+    genre_counts_df = genre_counts_df.sort_values(by='counts', ascending=False)
+    # Clean up genre names by removing double quotes
+    genre_counts_df['genre'] = genre_counts_df['genre'].str.replace('"', '')
 
+    # Calculate the total count of all genres
+    total_genres_count = genre_counts_df['counts'].sum()
 
-
+    return total_genres_count, genre_counts_df

@@ -58,7 +58,7 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     data.drop(columns=['Movie release date_y'],inplace=True)
 
     # Drop the rows with missing values in the 'Movie release date' column
-    data.dropna(subset=['Movie release date'], inplace=True)
+    #data.dropna(subset=['Movie release date'], inplace=True)
 
     # Only take the movies that have a collection id
     has_muliple = data.groupby('collection_id').count()['tmdb_id']>1
@@ -105,6 +105,10 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
 
     # Clean the genres 
     data['genres'] = data['genres'].apply(extract_genres)
+    
+    # Add a column with the number of movies in the collection
+    collection_counts = data['collection_id'].value_counts()
+    data['collection_size'] = data['collection_id'].map(collection_counts) # Map the counts back to the original DataFrame
 
     return data
 

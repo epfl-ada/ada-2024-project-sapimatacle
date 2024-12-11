@@ -41,7 +41,7 @@ def extract_genres(genres_str):
     except (ValueError, SyntaxError):
         return []
 
-def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
+def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingdates: str):
     """Return movies that are part of a franchise and have more than one movie in the franchise.
     Args:
         data: pandas dataframe of 'data/movie_metadata_with_tmdb.csv'
@@ -50,10 +50,15 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame):
         pd.DataFrame: Franchise movies.
     """
     # Open the missing_dates_manualsearch.csv file
-    missing_dates = pd.read_csv('ada-2024-project-sapimatacle/data/missing_dates_manualsearch.csv')
+    missing_dates = pd.read_csv(path_missingdates)
 
     # Merge the missing_dates with the data
-    data = data.merge(missing_dates[['Wikipedia movie ID','Movie release date']], how='left', on='Wikipedia movie ID')
+    data = pd.merge(data,missing_dates[['Wikipedia movie ID','Movie release date']],on='Wikipedia movie ID',how='outer',suffixes=('','_y'))
+    data['Movie release date'] = data['Movie release date'].combine_first(data['Movie release date_y'])
+    data.drop(columns=['Movie release date_y'],inplace=True)
+
+    # Drop the rows with missing values in the 'Movie release date' column
+    data.dropna(subset=['Movie release date'], inplace=True)
 
     # Only take the movies that have a collection id
     has_muliple = data.groupby('collection_id').count()['tmdb_id']>1

@@ -60,7 +60,7 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     # Drop the rows with missing values in the 'Movie release date' column
     #data.dropna(subset=['Movie release date'], inplace=True)
 
-    # Only take the movies that have a collection id
+    # Only take the movies that have a collection id, and where there is more than one movie in the collection
     has_muliple = data.groupby('collection_id').count()['tmdb_id']>1
     valid_idx = has_muliple[has_muliple].index
     data = data[data['collection_id'].isin(valid_idx)].reset_index(drop=True)
@@ -71,7 +71,7 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     # add a column with the release year
     data['release_year'] = data['Movie release date corrected'].dt.year
 
-    # add a collmn with the numerotation of the movies in the collection by release date order
+    # add a column with the numerotation of the movies in the collection by release date order
     data['movie_order'] = data.groupby('collection_name')['Movie release date corrected'].rank(method='first')
 
     # box office merge and drop the original columns
@@ -88,12 +88,10 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
         .groupby("collection_id")["release_year"]
         .diff()
     )
+    # THE ABOVE SECTION IS NOT WORKING
 
     # replace the 0 values with nan for the buget column
     data['budget'] = data['budget'].apply(lambda x: np.nan if x==0 else x)
-
-    #number of movies in each collection
-    data['number_movie_collection'] = data.groupby('collection_id').count()['tmdb_id']
 
     #tacking into account inflation for revenue and budget
     data['CPI'] = data.merge(data_2[['Year', 'CPI']], how='left', left_on='release_year', right_on='Year')['CPI']
@@ -105,6 +103,8 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
 
     # Clean the genres 
     data['genres'] = data['genres'].apply(extract_genres)
+    # Add the number of genres for each movie
+    data['num_genres'] = data['genres'].apply(len)
     
     # Add a column with the number of movies in the collection
     collection_counts = data['collection_id'].value_counts()

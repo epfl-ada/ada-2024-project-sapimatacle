@@ -171,10 +171,14 @@ def get_franchise_data(data: pd.DataFrame):
     franchise_length = (franchise_newest_release - franchise_oldest_release).dt.days
     franchise_length_years = (franchise_length / 365).round(0)
     franchise_average_years_bt_movies = franchise_length_years / (franchise_movie_count-1)
-    franchise_revenue = data.groupby('collection_id')['real_revenue'].apply(lambda x: x.sum() if x.notna().all() else np.nan)
-    franchise_revenue_avg= franchise_revenue/franchise_movie_count
+    franchise_revenue_avg = data.groupby('collection_id')['real_revenue'].mean()
     franchise_genre = data.groupby('collection_id')['genres'].apply(lambda x: ', '.join(set([genre for sublist in x for genre in sublist])))
     franchise_country = data.groupby('collection_id')['Movie countries (Freebase ID:name tuples)'].apply(lambda x: ', '.join(x.unique()))
+    franchise_budget_avg = data.groupby('collection_id')['real_budget'].mean()
+    franchise_runtine_avg = data.groupby('collection_id')['Movie runtime'].mean()
+    franchise_ratio_rb = franchise_revenue_avg/franchise_budget_avg
+
+
     # Extract the country names from the dictionary strings
     franchise_country = franchise_country.apply(lambda x: ', '.join([country.split(': "')[1].split('"')[0] for country in x.split(', ') if ': "' in country]))
     #region map variable
@@ -289,12 +293,14 @@ def get_franchise_data(data: pd.DataFrame):
         'genres': franchise_genre.values,
         'oldest_release': franchise_oldest_release.values,
         'newest_release': franchise_newest_release.values,
+        'runtime_avg': franchise_runtine_avg.values,
         'movie_count': franchise_movie_count.values,
         'average_years_bt_movies': franchise_average_years_bt_movies.values,
         'franchise_length': franchise_length,
         'franchise_length_years': franchise_length_years,
-        'revenue': franchise_revenue.values,
         'revenue_avg': franchise_revenue_avg.values,
+        'budget_avg': franchise_budget_avg.values,
+        'ratio_rb': franchise_ratio_rb.values,
         'country': franchise_country.values,
         'region': franchise_region.values,
         'average_score': franchise_average_score.values

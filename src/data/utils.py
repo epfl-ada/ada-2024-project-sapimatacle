@@ -62,14 +62,15 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     data['Movie release date'] = data['Movie release date'].combine_first(data['Movie release date_y'])
     data.drop(columns=['Movie release date_y'],inplace=True)
 
-    # Drop the rows with missing values in the 'Movie release date' column
-    #data.dropna(subset=['Movie release date'], inplace=True)
 
     # Only take the movies that have a collection id, and where there is more than one movie in the collection
     has_muliple = data.groupby('collection_id').count()['tmdb_id']>1
     valid_idx = has_muliple[has_muliple].index
     data = data[data['collection_id'].isin(valid_idx)].reset_index(drop=True)
 
+    # Drop the whole franchise where a movie has no release date
+    data = data.groupby('collection_id').filter(lambda x: x['Movie release date'].notna().all())
+    
     # Correct the release date
     data['Movie release date corrected'] = pd.to_datetime(data['Movie release date'],format='mixed',yearfirst=True)
 
@@ -93,7 +94,6 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
         .groupby("collection_id")["release_year"]
         .diff()
     )
-    # THE ABOVE SECTION IS NOT WORKING
 
     # replace the 0 values with nan for the buget column
     data['budget'] = data['budget'].apply(lambda x: np.nan if x==0 else x)

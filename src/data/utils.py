@@ -105,6 +105,8 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     data['real_revenue']= data['box_office']*base_year_cpi/data['CPI'].iloc[0]
     data['real_budget']= data['budget']*base_year_cpi/data['CPI'].iloc[0]
     data['real_profit']= data['box_office'] - data['budget']
+    #Ratio revenue over budget : 
+    data['ratio_revenue_budget']= data['real_revenue']/data['real_budget']
 
     # Clean the genres 
     data['genres'] = data['genres'].apply(extract_genres)

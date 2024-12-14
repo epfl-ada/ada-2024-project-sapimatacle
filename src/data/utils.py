@@ -78,7 +78,7 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     data['release_year'] = data['Movie release date corrected'].dt.year
 
     # add a column with the numerotation of the movies in the collection by release date order
-    data['movie_order'] = data.groupby('collection_name')['Movie release date corrected'].rank(method='first')
+    data['movie_order'] = data.groupby('collection_id')['Movie release date corrected'].rank(method='first')
 
     # box office merge and drop the original columns
     data['box_office']=data['Movie box office revenue'].apply(lambda x: x if x!=np.nan else data['revenue'])
@@ -119,6 +119,54 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
 
     return data
 
+def get_1_2_movies(data): 
+    """
+    Function to get the 1_st and 2_nd movie franhcise to analyse it in the tree and KNN model
+    """
+    # Drop unnecessary columns
+    data=data.drop(columns=[
+    'Freebase movie ID', 'Movie release date','release_year', 'Movie genres (Freebase ID:name tuples)', 'Movie languages (Freebase ID:name tuples)', 
+    'vote_count', 'tmdb_original_language', 'Movie release date corrected', 'box_office', 
+    'Movie runtime', 'Movie countries (Freebase ID:name tuples)', 'CPI', 'budget', 'tmdb_id','profit'
+    ])
+
+    data['movie_order'] = data['movie_order'].astype(int)
+
+    data = data[(data['movie_order'] == 1) | (data['movie_order'] == 2)]
+    data = data.pivot(index='collection_id', columns='movie_order')
+    data.columns = ['_'.join(map(str, col)).strip() for col in data.columns]
+    data = data.drop(columns =['years_diff_bt_pre_movies_1','collection_size_2'], axis=1)
+    data = data.reset_index()
+
+    # genre vecotrization
+    from sklearn.feature_extraction.text import CountVectorizer
+    data['genres_1'] = data['genres_1'].apply(lambda x: ", ".join(x) if isinstance(x, list) else x)
+    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "))
+    genre_matrix = vectorizer.fit_transform(data['genres_1'])
+    genre_df = pd.DataFrame(genre_matrix.toarray(), columns=[f'genre_1_{col}' for col in vectorizer.get_feature_names_out()])
+    data = pd.concat([data, genre_df], axis=1)
+
+    data['genres_2'] = data['genres_2'].apply(lambda x: ", ".join(x) if isinstance(x, list) else x)
+    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "))
+    genre_matrix = vectorizer.fit_transform(data['genres_2'])
+    genre_df = pd.DataFrame(genre_matrix.toarray(), columns=[f'genre_2_{col}' for col in vectorizer.get_feature_names_out()])
+    data = pd.concat([data, genre_df], axis=1)
+
+    data['tmdb_origin_country_1'] = data['tmdb_origin_country_1'].apply(lambda x: x.replace("[", "").replace("]", "").replace("'", ""))
+    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "))
+    country_matrix = vectorizer.fit_transform(data['tmdb_origin_country_1'])
+    country_df = pd.DataFrame(country_matrix.toarray(), columns=[f'tmdb_origin_country_1_{col}' for col in vectorizer.get_feature_names_out()])
+    data = pd.concat([data, country_df], axis=1)
+
+    data['tmdb_origin_country_2'] = data['tmdb_origin_country_2'].apply(lambda x: x.replace("[", "").replace("]", "").replace("'", ""))
+    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "))
+    country_matrix = vectorizer.fit_transform(data['tmdb_origin_country_2'])
+    country_df = pd.DataFrame(country_matrix.toarray(), columns=[f'tmdb_origin_country_2_{col}' for col in vectorizer.get_feature_names_out()])
+    data = pd.concat([data, country_df], axis=1)
+
+    #movie_genre = data['genres'].apply(lambda x: ', '.join(set([genre for sublist in x for genre in sublist])))
+    return data 
+    
 def get_movie(data: pd.DataFrame, data_2: pd.DataFrame):
     """Return movies with the same features as the franchise movies. 
     Args:

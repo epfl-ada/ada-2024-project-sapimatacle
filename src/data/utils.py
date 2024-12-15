@@ -362,16 +362,21 @@ col_for_dropna = ['Wikipedia_movie_ID', 'Freebase_movie_ID', 'Movie_release_date
                   'Freebase_actor_ID']
 
 def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: list =col_for_dropna):
-    """Drop rows if specified columns have missing values. Also add 
+    """Cleans the character metadata by dropping rows with missing values in specified columns,
+    mapping ethnicity IDs to their labels, and mapping ethnicities to racial groups.
+
     Args:
-        data: pandas dataframe of 'data/character.metadata.tsv'
-        columns: list of columns to check for missing values.
+        data (pd.DataFrame): DataFrame containing character metadata 'data/character.metadata.tsv'.
+        mapping_path (str): Path to the CSV file containing the mapping of ethnicities to racial groups.
+        columns (list): List of columns to check for missing values. Defaults to
+        ['Wikipedia_movie_ID', 'Freebase_movie_ID', 'Movie_release_date', 'Actor_gender', 'Actor_name', 'Freebase_character_actor_map_ID', 'Freebase_actor_ID'].
 
     Returns:
         pd.DataFrame: Cleaned character metadata.
     """
+    print(f"Dropping rows with missing values in any of {col_for_dropna}.")
     character_df = data.dropna(subset=columns).reset_index(drop=True)
-    print(f"Number of rows dropped: {data.shape[0] - character_df.shape[0]}/{data.shape[0]}")
+    print(f"Number of rows dropped: {data.shape[0] - character_df.shape[0]}")
     print(f"{character_df.shape[0]} rows remaining.")
     ethnicity_ids = character_df["Actor_ethnicity_Freebase_ID"].dropna().unique().tolist()
     ethnicity_ids_1 = ethnicity_ids[:200] # The header length is limited, so divide into two parts
@@ -441,3 +446,19 @@ def get_genre_counts(data = pd.DataFrame):
     total_genres_count = genre_counts_df['counts'].sum()
 
     return total_genres_count, genre_counts_df
+
+def get_list_of_characters_per_movie(character_df: pd.DataFrame):
+    """Get a list of characters per movie from the given DataFrame. Drop characters with no ethnicity entry.
+
+        character_df (pd.DataFrame): DataFrame containing character information, 
+                                     including columns 'Wikipedia_movie_ID', 'Character_name', and 'ethnicity'.
+
+        pd.DataFrame: DataFrame with 'Wikipedia_movie_ID' and a list of 'Character_name' for each movie, 
+                      excluding movies with no character names.
+    """
+    # Drop rows without ethnicity entry
+    char_eth_df = character_df.dropna(subset="ethnicity")
+    # Get list of characters per movie, excluding NaN values
+    char_eth_df = char_eth_df.groupby("Wikipedia_movie_ID", as_index=False)["Character_name"].apply(lambda x: x.dropna().tolist())
+    return char_eth_df[char_eth_df.Character_name.str.len() > 0].reset_index(drop=True)
+

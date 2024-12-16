@@ -51,7 +51,6 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     """
     # Open the missing_dates_manualsearch.csv file
     missing_dates = pd.read_csv(path_missingdates)
-    missing_dates = pd.read_csv('data/missing_dates_manualsearch.csv')
     missing_dates.dropna(subset=['Movie release date'], inplace=True)
     missing_dates.dtypes
     missing_dates=missing_dates.astype({'Movie release date': 'int'})
@@ -174,6 +173,7 @@ def get_movie(data: pd.DataFrame, data_2: pd.DataFrame):
     Returns:
         pd.DataFrame: Franchise movies.
     """
+    data = data.copy(deep=True)
     # Correct the release date
     data['Movie release date corrected'] = pd.to_datetime(data['Movie release date'],format='mixed',yearfirst=True, errors='coerce')
 

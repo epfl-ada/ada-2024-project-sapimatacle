@@ -10,7 +10,7 @@ from typing import List
 import pandas as pd
 from openai import AsyncOpenAI
 
-from src.data.constants import OPENAI_API_KEY2
+from src.data.constants import OPENAI_API_KEY
 from src.data.utils import get_list_of_characters_per_movie, clean_character_metadata
 from src.data.chatgpt_tools import create_prompt, limited_request, str_to_json
 
@@ -31,7 +31,7 @@ async def query_chargpt(prompts: List[str]):
         )
     client = AsyncOpenAI(
         http_client=httpx_client,
-        api_key=OPENAI_API_KEY2,  # Ensure the API key is set in your environment
+        api_key=OPENAI_API_KEY,  # Ensure the API key is set in your environment
     )
 
     # Use asyncio.gather to handle multiple queries concurrently
@@ -51,14 +51,16 @@ if __name__ == '__main__':
     wikipedia_movie_ids, prompts = prepare_prompts(plot_df, character_df)
 
     # limit length for testing
-    #pdb.set_trace()
-    prompts = prompts[6000:9000]
-    wikipedia_movie_ids = wikipedia_movie_ids[6000:9000]
-    # prompts = prompts[8000:]
-    # wikipedia_movie_ids = wikipedia_movie_ids[8000:]
+    
+    ###########################
+    # The following lines have to be edited so that we don't reach the usage limit
+    prompts = prompts[15000:]
+    wikipedia_movie_ids = wikipedia_movie_ids[15000:]
+    ###########################
+
     responses = asyncio.run(query_chargpt(prompts))
     # save responses to file
-    with open('data/responses_6000-8999_o4-mini.pkl', 'wb') as f1:
+    with open('data/character_kws/responses_15000-_o4-mini.pkl', 'wb') as f1:
         pickle.dump(responses, f1)
     
     # responses to json
@@ -66,5 +68,5 @@ if __name__ == '__main__':
     my_dict = {id: json for id, json in zip(wikipedia_movie_ids, list_of_json)}
     json_string = json.dumps(my_dict, indent=4)
     # save dict as json
-    with open('data/character_kws_6000-8999_o4-mini.json', 'w') as f2:
+    with open('data/character_kws/character_kws_15000-_o4-mini.json', 'w') as f2:
         f2.write(json_string)

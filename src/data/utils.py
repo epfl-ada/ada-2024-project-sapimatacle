@@ -7,6 +7,8 @@ import requests
 from bs4 import BeautifulSoup
 import ast
 
+from .sentiment_analysis import get_kw_dataframe
+
 
 def get_inflation_rate(): 
     URL ='https://www.minneapolisfed.org/about-us/monetary-policy/inflation-calculator/consumer-price-index-1800-'
@@ -200,7 +202,6 @@ def get_movie(data: pd.DataFrame, data_2: pd.DataFrame):
 
     # Clean the genres 
     data['genres'] = data['genres'].apply(extract_genres)
-
     return data
 
 def get_clean_franchise_movies(data: pd.DataFrame):
@@ -390,7 +391,10 @@ def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: lis
     character_df["ethnicity"] = character_df["Actor_ethnicity_Freebase_ID"].map(id_to_ethnicity)
     ethnicity_to_race_dict = pd.read_csv(mapping_path).set_index('Ethnicity')['Group'].to_dict()
     character_df["racial_group"] = character_df.ethnicity.map(ethnicity_to_race_dict)
-    return character_df
+    kw_df = get_kw_dataframe('data/character_kws')
+    character_df["char_name_lower"] = character_df["Character_name"].str.lower()
+    merged_df = character_df.merge(kw_df, left_on=["Wikipedia_movie_ID", "char_name_lower"], right_on=["Wikipedia_movie_ID", "char_name_lower"], how="left")
+    return merged_df
 
 def custom_autopct(values):
     def my_autopct(pct):
@@ -463,4 +467,39 @@ def get_list_of_characters_per_movie(character_df: pd.DataFrame):
     # Get list of characters per movie, excluding NaN values
     char_eth_df = char_eth_df.groupby("Wikipedia_movie_ID", as_index=False)["Character_name"].apply(lambda x: x.dropna().tolist())
     return char_eth_df[char_eth_df.Character_name.str.len() > 0].reset_index(drop=True)
+
+def create_is_from_asia(df):
+    """Create a boolean columns indicating if the movie is from Asia
+
+    Args:
+        df: movies_df, franchise_df, or movies_no_franchise_df
+    Return:
+        df: dataframe with a new column `is_from_asia`
+    """
+    df = df.copy(deep=True)
+    asian_countries = [
+    # Asia
+    "AF", "BD", "BT", "BN", "KH", "CN", "TL", "IN", "ID", "JP", 
+    "KZ", "KG", "LA", "MY", "MV", "MN", "MM", "NP", "PK", "PH", 
+    "SG", "KR", "LK", "TJ", "TH", "TM", "UZ", "VN", "KP",
+    # Russia
+    "RU",
+    # Oceania
+    "AS", "AU", "CK", "FJ", "FM", "GU", "KI", "MH", "NR", "NC", 
+    "NZ", "NU", "PW", "PG", "PN", "SB", "TK", "TO", "TV", "VU", "WF", "WS"
+]
+    list_of_countries = df.tmdb_origin_country.fillna('')
+    for i in range(len(list_of_countries)):
+        list_of_countries.iloc[i] = list_of_countries.iloc[i].strip("[]").replace("'", "").split(", ")
+
+    # check if asia is in the list of countries
+    assert len(df) == len(list_of_countries), "Length of dataframe and list of countries do not match"
+    bool_list = []
+    for l in list_of_countries:
+        if any([country in asian_countries for country in l]):
+            bool_list.append(True)
+        else:
+            bool_list.append(False)
+    df["is_from_asia"] = bool_list
+    return df
 

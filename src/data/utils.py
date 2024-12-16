@@ -1,7 +1,7 @@
 import time
 import pandas as pd
 import numpy as np
-#from SPARQLWrapper import SPARQLWrapper, JSON
+from SPARQLWrapper import SPARQLWrapper, JSON
 from collections import Counter
 import requests
 from bs4 import BeautifulSoup
@@ -104,7 +104,7 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     #Real Price = Nominal Price (at the time) × CPI in Base Year / CPI in Year of Price
     data['real_revenue']= data['box_office']*base_year_cpi/data['CPI'].iloc[0]
     data['real_budget']= data['budget']*base_year_cpi/data['CPI'].iloc[0]
-    data['real_profit']= data['box_office'] - data['budget']
+    data['real_profit']= data['real_revenue'] - data['real_budget']
     #Ratio revenue over budget : 
     data['ratio_revenue_budget']= data['real_revenue']/data['real_budget']
 
@@ -369,7 +369,8 @@ def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: lis
         data (pd.DataFrame): DataFrame containing character metadata 'data/character.metadata.tsv'.
         mapping_path (str): Path to the CSV file containing the mapping of ethnicities to racial groups.
         columns (list): List of columns to check for missing values. Defaults to
-        ['Wikipedia_movie_ID', 'Freebase_movie_ID', 'Movie_release_date', 'Actor_gender', 'Actor_name', 'Freebase_character_actor_map_ID', 'Freebase_actor_ID'].
+        ['Wikipedia_movie_ID', 'Freebase_movie_ID', 'Movie_release_date', 'Actor_gender',
+        'Actor_name', 'Freebase_character_actor_map_ID', 'Freebase_actor_ID'].
 
     Returns:
         pd.DataFrame: Cleaned character metadata.
@@ -378,6 +379,8 @@ def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: lis
     character_df = data.dropna(subset=columns).reset_index(drop=True)
     print(f"Number of rows dropped: {data.shape[0] - character_df.shape[0]}")
     print(f"{character_df.shape[0]} rows remaining.")
+
+    # Get etbnicity related columns
     ethnicity_ids = character_df["Actor_ethnicity_Freebase_ID"].dropna().unique().tolist()
     ethnicity_ids_1 = ethnicity_ids[:200] # The header length is limited, so divide into two parts
     time.sleep(1) # To avoid rate limiting
@@ -385,7 +388,6 @@ def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: lis
     id_to_ethnicity = get_labels_from_freebase_ids(ethnicity_ids_1)
     id_to_ethnicity = id_to_ethnicity | get_labels_from_freebase_ids(ethnicity_ids_2)
     character_df["ethnicity"] = character_df["Actor_ethnicity_Freebase_ID"].map(id_to_ethnicity)
-
     ethnicity_to_race_dict = pd.read_csv(mapping_path).set_index('Ethnicity')['Group'].to_dict()
     character_df["racial_group"] = character_df.ethnicity.map(ethnicity_to_race_dict)
     return character_df

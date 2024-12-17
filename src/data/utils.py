@@ -1,11 +1,13 @@
 import time
 import pandas as pd
 import numpy as np
-#from SPARQLWrapper import SPARQLWrapper, JSON
+from SPARQLWrapper import SPARQLWrapper, JSON
 from collections import Counter
 import requests
 from bs4 import BeautifulSoup
 import ast
+
+from .sentiment_analysis import get_kw_dataframe
 
 
 def get_inflation_rate(): 
@@ -51,7 +53,6 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     """
     # Open the missing_dates_manualsearch.csv file
     missing_dates = pd.read_csv(path_missingdates)
-    missing_dates = pd.read_csv('data/missing_dates_manualsearch.csv')
     missing_dates.dropna(subset=['Movie release date'], inplace=True)
     missing_dates.dtypes
     missing_dates=missing_dates.astype({'Movie release date': 'int'})
@@ -104,7 +105,7 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     #Real Price = Nominal Price (at the time) × CPI in Base Year / CPI in Year of Price
     data['real_revenue']= data['box_office']*base_year_cpi/data['CPI'].iloc[0]
     data['real_budget']= data['budget']*base_year_cpi/data['CPI'].iloc[0]
-    data['real_profit']= data['box_office'] - data['budget']
+    data['real_profit']= data['real_revenue'] - data['real_budget']
     #Ratio revenue over budget : 
     data['ratio_revenue_budget']= data['real_revenue']/data['real_budget']
 
@@ -174,6 +175,7 @@ def get_movie(data: pd.DataFrame, data_2: pd.DataFrame):
     Returns:
         pd.DataFrame: Franchise movies.
     """
+    data = data.copy(deep=True)
     # Correct the release date
     data['Movie release date corrected'] = pd.to_datetime(data['Movie release date'],format='mixed',yearfirst=True, errors='coerce')
 
@@ -200,7 +202,6 @@ def get_movie(data: pd.DataFrame, data_2: pd.DataFrame):
 
     # Clean the genres 
     data['genres'] = data['genres'].apply(extract_genres)
-
     return data
 
 def get_clean_franchise_movies(data: pd.DataFrame):
@@ -369,15 +370,18 @@ def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: lis
         data (pd.DataFrame): DataFrame containing character metadata 'data/character.metadata.tsv'.
         mapping_path (str): Path to the CSV file containing the mapping of ethnicities to racial groups.
         columns (list): List of columns to check for missing values. Defaults to
-        ['Wikipedia_movie_ID', 'Freebase_movie_ID', 'Movie_release_date', 'Actor_gender', 'Actor_name', 'Freebase_character_actor_map_ID', 'Freebase_actor_ID'].
+        ['Wikipedia_movie_ID', 'Freebase_movie_ID', 'Movie_release_date', 'Actor_gender',
+        'Actor_name', 'Freebase_character_actor_map_ID', 'Freebase_actor_ID'].
 
     Returns:
         pd.DataFrame: Cleaned character metadata.
     """
-    print(f"Dropping rows with missing values in any of {col_for_dropna}.")
+    print(f"Dropping character data rows with missing values in any of {col_for_dropna}.")
     character_df = data.dropna(subset=columns).reset_index(drop=True)
     print(f"Number of rows dropped: {data.shape[0] - character_df.shape[0]}")
     print(f"{character_df.shape[0]} rows remaining.")
+
+    # Get etbnicity related columns
     ethnicity_ids = character_df["Actor_ethnicity_Freebase_ID"].dropna().unique().tolist()
     ethnicity_ids_1 = ethnicity_ids[:200] # The header length is limited, so divide into two parts
     time.sleep(1) # To avoid rate limiting
@@ -385,10 +389,12 @@ def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: lis
     id_to_ethnicity = get_labels_from_freebase_ids(ethnicity_ids_1)
     id_to_ethnicity = id_to_ethnicity | get_labels_from_freebase_ids(ethnicity_ids_2)
     character_df["ethnicity"] = character_df["Actor_ethnicity_Freebase_ID"].map(id_to_ethnicity)
-
     ethnicity_to_race_dict = pd.read_csv(mapping_path).set_index('Ethnicity')['Group'].to_dict()
     character_df["racial_group"] = character_df.ethnicity.map(ethnicity_to_race_dict)
-    return character_df
+    kw_df = get_kw_dataframe('data/character_kws')
+    character_df["char_name_lower"] = character_df["Character_name"].str.lower()
+    merged_df = character_df.merge(kw_df, on=["Wikipedia_movie_ID", "char_name_lower"], how="left")
+    return merged_df
 
 def custom_autopct(values):
     def my_autopct(pct):
@@ -461,4 +467,68 @@ def get_list_of_characters_per_movie(character_df: pd.DataFrame):
     # Get list of characters per movie, excluding NaN values
     char_eth_df = char_eth_df.groupby("Wikipedia_movie_ID", as_index=False)["Character_name"].apply(lambda x: x.dropna().tolist())
     return char_eth_df[char_eth_df.Character_name.str.len() > 0].reset_index(drop=True)
+
+def create_is_from_asia(df):
+    """Create a boolean columns indicating if the movie is from Asia
+
+    Args:
+        df: movies_df, franchise_df, or movies_no_franchise_df
+    Return:
+        df: dataframe with a new column `is_from_asia`
+    """
+    df = df.copy(deep=True)
+    asian_countries = [
+    # Asia
+    "AF", "BD", "BT", "BN", "KH", "CN", "TL", "IN", "ID", "JP", 
+    "KZ", "KG", "LA", "MY", "MV", "MN", "MM", "NP", "PK", "PH", 
+    "SG", "KR", "LK", "TJ", "TH", "TM", "UZ", "VN", "KP",
+    # Russia
+    "RU",
+    # Oceania
+    "AS", "AU", "CK", "FJ", "FM", "GU", "KI", "MH", "NR", "NC", 
+    "NZ", "NU", "PW", "PG", "PN", "SB", "TK", "TO", "TV", "VU", "WF", "WS"
+]
+    list_of_countries = df.tmdb_origin_country.fillna('')
+    for i in range(len(list_of_countries)):
+        list_of_countries.iloc[i] = list_of_countries.iloc[i].strip("[]").replace("'", "").split(", ")
+
+    # check if asia is in the list of countries
+    assert len(df) == len(list_of_countries), "Length of dataframe and list of countries do not match"
+    bool_list = []
+    for l in list_of_countries:
+        if any([country in asian_countries for country in l]):
+            bool_list.append(True)
+        else:
+            bool_list.append(False)
+    df["is_from_asia"] = bool_list
+    return df
+
+def create_num_racial_groups(movie_df, character_df):
+    """Create new columns in the movie dataframe with the number of racial groups in the movie.
+    Create new columns in the movie dataframe indicating the number of characters from each racial group in each movie.
+    
+    Args:
+        movie_df (pd.DataFrame): DataFrame containing movie data with at least a 'Wikipedia movie ID' column.
+        character_df (pd.DataFrame): DataFrame containing character data with 'Wikipedia_movie_ID' and 'racial_group' columns.
+
+    Returns:
+        pd.DataFrame: The original movie dataframe with additional columns for each racial group
+        (e.g., 'num_Asian', 'num_Black'), representing the count of characters from each racial group in each movie.
+    """
+    movie_df = movie_df.copy(deep=True)
+    def str_to_list(x):
+        my_list = ",".join(x).strip(",").split(",")
+        my_list = list(filter(lambda x: x != "", my_list))
+        return my_list
+
+    character_df[["Wikipedia_movie_ID", 'racial_group']].fillna("").groupby("Wikipedia_movie_ID")["racial_group"].apply(str_to_list)
+    character_df_unique_racial_group = character_df[["Wikipedia_movie_ID", 'racial_group']].fillna("").groupby("Wikipedia_movie_ID")["racial_group"].apply(str_to_list).explode().reset_index()
+    racial_group_counts = character_df_unique_racial_group.groupby(['Wikipedia_movie_ID', 'racial_group']).size().unstack(fill_value=0).reset_index()
+    racial_group_counts.columns.name = None
+
+    # Add "num_" prefix to racial group column names
+    racial_group_counts = racial_group_counts.rename(columns=lambda x: f'num_{x}' if x != 'Wikipedia_movie_ID' else x)
+    movie_df = movie_df.merge(racial_group_counts, left_on="Wikipedia movie ID", right_on='Wikipedia_movie_ID', how='left')
+    movie_df = movie_df.drop(columns=['Wikipedia_movie_ID'])
+    return movie_df
 

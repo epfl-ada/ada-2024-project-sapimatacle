@@ -376,7 +376,7 @@ def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: lis
     Returns:
         pd.DataFrame: Cleaned character metadata.
     """
-    print(f"Dropping rows with missing values in any of {col_for_dropna}.")
+    print(f"Dropping character data rows with missing values in any of {col_for_dropna}.")
     character_df = data.dropna(subset=columns).reset_index(drop=True)
     print(f"Number of rows dropped: {data.shape[0] - character_df.shape[0]}")
     print(f"{character_df.shape[0]} rows remaining.")
@@ -393,7 +393,7 @@ def clean_character_metadata(data: pd.DataFrame, mapping_path: str, columns: lis
     character_df["racial_group"] = character_df.ethnicity.map(ethnicity_to_race_dict)
     kw_df = get_kw_dataframe('data/character_kws')
     character_df["char_name_lower"] = character_df["Character_name"].str.lower()
-    merged_df = character_df.merge(kw_df, left_on=["Wikipedia_movie_ID", "char_name_lower"], right_on=["Wikipedia_movie_ID", "char_name_lower"], how="left")
+    merged_df = character_df.merge(kw_df, on=["Wikipedia_movie_ID", "char_name_lower"], how="left")
     return merged_df
 
 def custom_autopct(values):
@@ -502,4 +502,33 @@ def create_is_from_asia(df):
             bool_list.append(False)
     df["is_from_asia"] = bool_list
     return df
+
+def create_num_racial_groups(movie_df, character_df):
+    """Create new columns in the movie dataframe with the number of racial groups in the movie.
+    Create new columns in the movie dataframe indicating the number of characters from each racial group in each movie.
+    
+    Args:
+        movie_df (pd.DataFrame): DataFrame containing movie data with at least a 'Wikipedia movie ID' column.
+        character_df (pd.DataFrame): DataFrame containing character data with 'Wikipedia_movie_ID' and 'racial_group' columns.
+
+    Returns:
+        pd.DataFrame: The original movie dataframe with additional columns for each racial group
+        (e.g., 'num_Asian', 'num_Black'), representing the count of characters from each racial group in each movie.
+    """
+    movie_df = movie_df.copy(deep=True)
+    def str_to_list(x):
+        my_list = ",".join(x).strip(",").split(",")
+        my_list = list(filter(lambda x: x != "", my_list))
+        return my_list
+
+    character_df[["Wikipedia_movie_ID", 'racial_group']].fillna("").groupby("Wikipedia_movie_ID")["racial_group"].apply(str_to_list)
+    character_df_unique_racial_group = character_df[["Wikipedia_movie_ID", 'racial_group']].fillna("").groupby("Wikipedia_movie_ID")["racial_group"].apply(str_to_list).explode().reset_index()
+    racial_group_counts = character_df_unique_racial_group.groupby(['Wikipedia_movie_ID', 'racial_group']).size().unstack(fill_value=0).reset_index()
+    racial_group_counts.columns.name = None
+
+    # Add "num_" prefix to racial group column names
+    racial_group_counts = racial_group_counts.rename(columns=lambda x: f'num_{x}' if x != 'Wikipedia_movie_ID' else x)
+    movie_df = movie_df.merge(racial_group_counts, left_on="Wikipedia movie ID", right_on='Wikipedia_movie_ID', how='left')
+    movie_df = movie_df.drop(columns=['Wikipedia_movie_ID'])
+    return movie_df
 

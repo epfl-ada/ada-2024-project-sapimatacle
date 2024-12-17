@@ -12,7 +12,10 @@ getimdb_id.ipynb
 resultsV1.ipynb
 resultsfinalpierre.ipynb
 results_salome_2.ipynb
+*.ipynb
 
+# vscode
+*.code-workspace
 
 # logs
 logs/

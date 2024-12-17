@@ -137,7 +137,6 @@ def get_1_2_movies(data):
     data = data.pivot(index='collection_id', columns='movie_order')
     data.columns = ['_'.join(map(str, col)).strip() for col in data.columns]
     data = data.drop(columns =['years_diff_bt_pre_movies_1','collection_size_2'], axis=1)
-    # Filter the DataFrame to include only the first and second movies in each franchise
     # Pivot the DataFrame to have one row per franchise and columns for the genres of the first and second movies
     pivot_df = data.pivot(index='collection_id', columns='movie_order', values='genres')
     # Create a new column to indicate if the genres are the same between the first and second movies

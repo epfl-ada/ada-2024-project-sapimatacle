@@ -137,10 +137,6 @@ def get_1_2_movies(data):
     data = data.pivot(index='collection_id', columns='movie_order')
     data.columns = ['_'.join(map(str, col)).strip() for col in data.columns]
     data = data.drop(columns =['years_diff_bt_pre_movies_1','collection_size_2'], axis=1)
-    # Pivot the DataFrame to have one row per franchise and columns for the genres of the first and second movies
-    pivot_df = data.pivot(index='collection_id', columns='movie_order', values='genres')
-    # Create a new column to indicate if the genres are the same between the first and second movies
-    data['same_genres'] = pivot_df[1] == pivot_df[2]
     data = data.reset_index()
 
     # genre vecotrization
@@ -168,8 +164,8 @@ def get_1_2_movies(data):
     country_matrix = vectorizer.fit_transform(data['tmdb_origin_country_2'])
     country_df = pd.DataFrame(country_matrix.toarray(), columns=[f'tmdb_origin_country_2_{col}' for col in vectorizer.get_feature_names_out()])
     data = pd.concat([data, country_df], axis=1)
-    
 
+    data['same_genres'] = (data['genres_1'] == data['genres_2']).astype(int)
     return data 
     
 def get_movie(data: pd.DataFrame, data_2: pd.DataFrame):

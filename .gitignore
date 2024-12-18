@@ -1,5 +1,6 @@
 # our files
 maylis.ipynb
+maylis_2.ipynb
 maylis_functions.py
 results_maylis.ipynb
 salome.ipynb
@@ -11,7 +12,10 @@ getimdb_id.ipynb
 resultsV1.ipynb
 resultsfinalpierre.ipynb
 results_salome_2.ipynb
+*.ipynb
 
+# vscode
+*.code-workspace
 
 # logs
 logs/

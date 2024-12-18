@@ -6,6 +6,9 @@ import geopandas as gpd
 import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
+import seaborn as sns
+
+from ..data.utils import create_is_from_asia, custom_autopct
 
 # Suppress FutureWarnings and UserWarnings
 warnings.simplefilter('ignore', category=FutureWarning)
@@ -106,4 +109,66 @@ def plot_network(franchise_df):
     )
     # Set the title
     plt.title("Geographical Network of Film Industry Connections", fontsize=14)
+    plt.show()
+
+def plot_geo_piecharts(movie_df, franchise_df, movies_no_franchise_df):
+    # Process the list of countries for franchise movies
+    list_of_countries = franchise_df.tmdb_origin_country.fillna('')
+    for i in range(len(list_of_countries)):
+        list_of_countries.iloc[i] = list_of_countries.iloc[i].strip("[]").replace("'", "").split(", ")
+
+    # Flatten the list of countries and count occurrences
+    country_counts = list_of_countries.explode().value_counts().drop("")
+
+    # Group the counts of countries outside the top 7 into 'Others'
+    top_countries = country_counts.nlargest(7)
+    other_countries_count = country_counts.iloc[7:].sum()
+    top_countries['Others'] = other_countries_count
+
+    # Process the list of countries for non-franchise movies
+    list_of_countries_non_fr = movies_no_franchise_df.tmdb_origin_country.fillna('')
+    for i in range(len(list_of_countries_non_fr)):
+        list_of_countries_non_fr.iloc[i] = list_of_countries_non_fr.iloc[i].strip("[]").replace("'", "").split(", ")
+
+    # Flatten the list of countries and count occurrences
+    country_counts_non_fr = list_of_countries_non_fr.explode().value_counts().drop("")
+
+    # Group the counts of countries outside the top 7 into 'Others'
+    top_countries_non_fr = country_counts_non_fr.nlargest(7)
+    other_countries_count_non_fr = country_counts_non_fr.iloc[7:].sum()
+    top_countries_non_fr['Others'] = other_countries_count_non_fr
+
+    # Plot the pie charts side by side
+    fig, axes = plt.subplots(1, 4, figsize=(14, 4))
+
+    # Plot for franchise movies
+    top_countries.plot(kind='pie', ax=axes[0], autopct='%1.1f%%', startangle=90, colors=sns.color_palette("colorblind", len(top_countries)))
+    axes[0].set_ylabel('')
+    axes[0].set_title('Top 7 Countries in Franchise', fontsize=14)
+
+    # Plot for non-franchise movies
+    top_countries_non_fr.plot(kind='pie', ax=axes[1], autopct='%1.1f%%', startangle=90, colors=sns.color_palette("colorblind", len(top_countries_non_fr)))
+    axes[1].set_ylabel('')
+    axes[1].set_title('Top 7 Countries in Non-Franchise', fontsize=14)
+
+    fr_df = create_is_from_asia(franchise_df)
+    non_fr_df = create_is_from_asia(movies_no_franchise_df)
+    # Calculate proportions for both franchise and non-franchise movies
+    asia_prop_fr = fr_df['is_from_asia'].value_counts()
+    asia_prop_non_fr = non_fr_df['is_from_asia'].value_counts()
+
+    # Plot franchise movies
+    asia_prop_fr.plot(kind='pie', ax=axes[2], autopct=custom_autopct(asia_prop_fr), 
+                    labels=['Non-Asian', 'Asian'], colors=['#1f77b4', '#ff7f0e'], startangle=90)
+    axes[2].set_title('Franchise Movies from Asia', fontsize=14)
+    axes[2].set_ylabel('')
+
+    # Plot non-franchise movies  
+    asia_prop_non_fr.plot(kind='pie', ax=axes[3], autopct=custom_autopct(asia_prop_non_fr),
+                        labels=['Non-Asian', 'Asian'], colors=['#1f77b4', '#ff7f0e'], startangle=90)
+    axes[3].set_title('Non-Franchise Movies from Asia', fontsize=14)
+    axes[3].set_ylabel('')
+
+    plt.suptitle('Movies by geography', y=1.05, fontsize=18)
+    plt.tight_layout()
     plt.show()

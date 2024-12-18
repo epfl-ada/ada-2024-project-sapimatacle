@@ -165,6 +165,7 @@ def get_1_2_movies(data):
     country_df = pd.DataFrame(country_matrix.toarray(), columns=[f'tmdb_origin_country_2_{col}' for col in vectorizer.get_feature_names_out()])
     data = pd.concat([data, country_df], axis=1)
 
+    data['same_genres'] = (data['genres_1'] == data['genres_2']).astype(int)
     return data 
     
 def get_movie(data: pd.DataFrame, data_2: pd.DataFrame):

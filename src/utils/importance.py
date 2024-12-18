@@ -3,12 +3,12 @@ import os
 import numpy as np
 import pickle
 import pandas as pd
-import matplotlib
+#import matplotlib
 import matplotlib.pyplot as plt
 from sklearn.inspection import permutation_importance
 import shap
 
-matplotlib.use('Agg') # for headless environment
+#matplotlib.use('Agg') # for headless environment
 
 # Load the model
 def load_predictions_and_model():

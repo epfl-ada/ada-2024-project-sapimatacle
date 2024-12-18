@@ -126,8 +126,8 @@ def get_1_2_movies(data):
     """
     # Drop unnecessary columns
     data=data.drop(columns=[
-    'Freebase movie ID', 'Movie release date','release_year', 'Movie genres (Freebase ID:name tuples)', 'Movie languages (Freebase ID:name tuples)', 
-    'vote_count', 'tmdb_original_language', 'Movie release date corrected', 'box_office', 
+    'Freebase movie ID', 'Movie release date', 'Movie genres (Freebase ID:name tuples)', 'Movie languages (Freebase ID:name tuples)', 
+    'tmdb_original_language', 'Movie release date corrected', 'box_office', 
     'Movie runtime', 'Movie countries (Freebase ID:name tuples)', 'CPI', 'budget', 'tmdb_id','profit'
     ])
 

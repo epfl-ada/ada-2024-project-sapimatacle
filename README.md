@@ -43,6 +43,7 @@ We complement our movie data by merging data from [the movie database (TMDB)](ht
 
 We decided to add this dataset and the mentionned features as they seem relevant to answer our research questions, and that the given data set had some issues, such as the genres proposed, which were very specific (this is shown in results.ipynb), not usable, and that needed to be grouped together.
 
+
 ## Methods
 
 ### Q1:

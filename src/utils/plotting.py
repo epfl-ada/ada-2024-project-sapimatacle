@@ -41,6 +41,13 @@ def plot_network(franchise_df):
             country_list = ['United Kingdom' if country == 'Scotland' else country for country in country_list]
             country_list = ['United Kingdom' if country == 'Wales' else country for country in country_list]
             country_list = ['United Kingdom' if country == 'Northern Ireland' else country for country in country_list]
+            country_list = ['North Macedonia' if country == 'Republic of Macedonia' else country for country in country_list]
+            country_list = ['Germany' if country == 'Nazi Germany' else country for country in country_list]
+            country_list = ['Slovakia' if country == 'Slovak Republic' else country for country in country_list]
+            country_list = ['Serbia' if country == 'Bosnia and Herzegovina' else country for country in country_list]
+            country_list = ['Italy' if country == 'Kingdom of Italy' else country for country in country_list]
+            country_list = ['South Korea' if country == 'Korea' else country for country in country_list]
+            country_list = ['France' if country == 'Monaco' else country for country in country_list]
 
             country_counts.update(country_list)
             cleaned_countries.append(country_list)

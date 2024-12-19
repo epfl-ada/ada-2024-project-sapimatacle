@@ -11,6 +11,12 @@ from .sentiment_analysis import get_kw_dataframe
 
 TMDB_GENRES = ["Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "History", "Horror", "Music", "Mystery", "Romance", "Science Fiction", "Thriller", "TV Movie", "War", "Western"]
 
+def clean_categories(category_string):
+    # Remove brackets and quotes
+    cleaned_category = category_string.replace("[", "").replace("]", "").replace("'", "").split(", ")
+    # Return category list
+    return cleaned_category
+
 def get_inflation_rate(): 
     URL ='https://www.minneapolisfed.org/about-us/monetary-policy/inflation-calculator/consumer-price-index-1800-'
     r = requests.get(URL)

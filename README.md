@@ -63,14 +63,13 @@ The next goal is to perform different correlation tests in subgroups between par
 
 ### Q2-3
 
-By cross-referencing `Actor_ethnicity_Freebase_ID` with Wikidata, we restored >400 unique categories. Inspired by racial groups used in [the British](https://www.ethnicity-facts-figures.service.gov.uk/style-guide/ethnic-groups/) and [the USA census](https://www.census.gov/topics/population/race/about.html), we came up with the following 7 racial groups into which we manually map these ethnicity categories:
+By cross-referencing `Actor_ethnicity_Freebase_ID` with Wikidata, we restored >400 unique ethnicity categories. Inspired by racial groups used in [the British](https://www.ethnicity-facts-figures.service.gov.uk/style-guide/ethnic-groups/) and [the USA census](https://www.census.gov/topics/population/race/about.html), we came up with the following 7 racial groups into which we manually map these ethnicity categories:
 
 ```
 Hispanic, White, Black, Asian, Native American, Middle Eastern, Others
-
 ```
 
-This grouping (`data/ethnicity_mapping.csv)`can be not only combined with actor analysis using movie plot, but also can be useful in tabular data analysis (`data/movie_metadata_with_tmdb.csv`). To analyze casting bias in the movie industry, we ran sentiment analysis on words that describes characters in movie plots. We plan to utilize the pert-of-speech tagging from the [spaCy package](https://spacy.io/) for extraction, combined with a transformer-based pretrained language model.
+This grouping (`data/ethnicity_mapping.csv)`can be not only combined with actor analysis using movie plot, but also can be useful in tabular data analysis (`data/movie_metadata_with_tmdb.csv`). To analyze casting bias in the movie industry, we ran sentiment analysis on words that describes characters in movie plots. We plan to utilize the pert-of-speech tagging from the [spaCy package](https://spacy.io/) for extraction, combined with a trans""former-based pretrained language model.
 
 ### 
 

@@ -42,12 +42,30 @@ def plot_network(franchise_df):
             country_list = ['United Kingdom' if country == 'Wales' else country for country in country_list]
             country_list = ['United Kingdom' if country == 'Northern Ireland' else country for country in country_list]
             country_list = ['North Macedonia' if country == 'Republic of Macedonia' else country for country in country_list]
-            country_list = ['Germany' if country == 'Nazi Germany' else country for country in country_list]
+            country_list = ['Germany' if country == 'Nazi Germany' or country == 'German Language' else country for country in country_list]
             country_list = ['Slovakia' if country == 'Slovak Republic' else country for country in country_list]
             country_list = ['Serbia' if country == 'Bosnia and Herzegovina' else country for country in country_list]
             country_list = ['Italy' if country == 'Kingdom of Italy' else country for country in country_list]
             country_list = ['South Korea' if country == 'Korea' else country for country in country_list]
             country_list = ['France' if country == 'Monaco' else country for country in country_list]
+            country_list = ['Italy' if country == 'Malta' else country for country in country_list]
+            country_list = ['Croatia' if country == 'Socialist Federal Republic of Yugoslavia' else country for country in country_list]
+            country_list = ['Serbia' if country == 'Serbia and Montenegro' else country for country in country_list]
+            country_list = ['United Kingdom' if country == 'Isle of Man' else country for country in country_list]
+            country_list = ['Uzbekistan' if country == 'Uzbek SSR' else country for country in country_list]
+            country_list = ['Palestine' if country == 'Mandatory Palestine' else country for country in country_list]
+            country_list = ['Palestine' if country == 'Palestinian territories' or country == 'Palestinian Territories' else country for country in country_list]
+            country_list = ['Myanmar' if country == 'Burma' else country for country in country_list]
+            country_list = ['Germany' if country == 'Soviet occupation zone' else country for country in country_list]
+            country_list = ['Ukraine' if country == 'Ukrainian SSR' or country == 'Ukranian SSR' else country for country in country_list]
+            country_list = ['Georgia' if country == 'Georgian SSR' else country for country in country_list]
+            #country_list = ['Kazakhstan' if country == 'Kazakh SSR' else country for country in country_list]
+            #country_list = ['Kyrgyzstan' if country == 'Kirghiz SSR' else country for country in country_list]
+            country_list = ['Congo' if country == 'Democratic Republic of the Congo' else country for country in country_list]
+            country_list = ['Iraq' if country == 'Iraqi Kurdistan' else country for country in country_list]
+            country_list = ['Venezuela' if country == 'Aruba' else country for country in country_list]
+            country_list = ['China' if country == 'Republic of China' or country == 'Macau' else country for country in country_list]
+            country_list = ['India' if country == 'Malayalam Language' else country for country in country_list]
 
             country_counts.update(country_list)
             cleaned_countries.append(country_list)
@@ -108,7 +126,7 @@ def plot_network(franchise_df):
     # Draw the network on top of the world map
 
     # Get the size of each node based on the country count
-    node_sizes = [country_counts[country] * 5 for country in G.nodes()]
+    node_sizes = [country_counts[country] * 1 for country in G.nodes()]
 
     nx.draw(
         G, pos, ax=ax, with_labels=False, node_color='lightblue',

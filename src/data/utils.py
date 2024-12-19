@@ -505,9 +505,8 @@ def create_is_from_asia(df):
     df["is_from_asia"] = bool_list
     return df
 
-def create_num_racial_groups(movie_df, character_df):
-    """Create new columns in the movie dataframe with the number of racial groups in the movie.
-    Create new columns in the movie dataframe indicating the number of characters from each racial group in each movie.
+def create_ethnicity_columns(movie_df, character_df):
+    """Create new columns in the movie dataframe with the number of racial groups and female_ratio in the movie.
     
     Args:
         movie_df (pd.DataFrame): DataFrame containing movie data with at least a 'Wikipedia movie ID' column.
@@ -515,7 +514,7 @@ def create_num_racial_groups(movie_df, character_df):
 
     Returns:
         pd.DataFrame: The original movie dataframe with additional columns for each racial group
-        (e.g., 'num_Asian', 'num_Black'), representing the count of characters from each racial group in each movie.
+        (e.g., 'num_Asian', 'num_Black') and female_ratio. The count represents the number of characters from each racial group.
     """
     movie_df = movie_df.copy(deep=True)
     def str_to_list(x):
@@ -532,6 +531,13 @@ def create_num_racial_groups(movie_df, character_df):
     racial_group_counts = racial_group_counts.rename(columns=lambda x: f'num_{x}' if x != 'Wikipedia_movie_ID' else x)
     movie_df = movie_df.merge(racial_group_counts, left_on="Wikipedia movie ID", right_on='Wikipedia_movie_ID', how='left')
     movie_df = movie_df.drop(columns=['Wikipedia_movie_ID'])
+
+    ## Add gender ratio
+    gender_df = character_df[["Wikipedia_movie_ID", "Actor_gender"]].copy()
+    gender_df.loc[:, "is_woman"] = (gender_df["Actor_gender"] == "F").astype(int)
+    female_ratio = gender_df.groupby("Wikipedia_movie_ID")["is_woman"].mean().rename('female_ratio')
+    movie_df = movie_df.merge(female_ratio, left_on="Wikipedia movie ID", right_on="Wikipedia_movie_ID", how="left")
+
     return movie_df
 
 def get_dummies_for_tree(movies_df):
@@ -552,7 +558,7 @@ def get_dummies_for_tree(movies_df):
                     'vote_average', 'genres','run_time', 'tmdb_origin_country', 'tmdb_original_language',
                     'num_Asian', 'num_Black', 'num_Hispanic', 'num_Middle Eastern',
                     'num_Native American', 'num_Others', 'num_White',
-                    'release_year', 'real_revenue', 'real_budget']
+                    'release_year', 'real_revenue', 'real_budget', 'female_ratio']
     
     data = movies_df.copy(deep=True)
     # Preliminary: only keep the columns we need

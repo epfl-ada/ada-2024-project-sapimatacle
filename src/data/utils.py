@@ -223,6 +223,7 @@ def get_franchise_data(data: pd.DataFrame):
     Returns:
         pd.DataFrame: Franchise data.
     """
+    data = data.copy()
     franchise_oldest_release= data.groupby('collection_id')['Movie release date corrected'].min()
     franchise_newest_release= data.groupby('collection_id')['Movie release date corrected'].max()
     franchise_movie_count = data.groupby('collection_id').count()['tmdb_id']

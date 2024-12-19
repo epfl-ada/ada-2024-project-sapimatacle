@@ -6,6 +6,8 @@ from collections import Counter
 import requests
 from bs4 import BeautifulSoup
 import ast
+from sklearn.feature_extraction.text import CountVectorizer
+
 
 from .sentiment_analysis import get_kw_dataframe
 
@@ -147,27 +149,26 @@ def get_1_2_movies(data):
     data = data.reset_index()
 
     # genre vecotrization
-    from sklearn.feature_extraction.text import CountVectorizer
     data['genres_1'] = data['genres_1'].apply(lambda x: ", ".join(x) if isinstance(x, list) else x)
-    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "))
+    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "),token_pattern=None)
     genre_matrix = vectorizer.fit_transform(data['genres_1'])
     genre_df = pd.DataFrame(genre_matrix.toarray(), columns=[f'genre_1_{col}' for col in vectorizer.get_feature_names_out()])
     data = pd.concat([data, genre_df], axis=1)
 
     data['genres_2'] = data['genres_2'].apply(lambda x: ", ".join(x) if isinstance(x, list) else x)
-    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "))
+    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "),token_pattern=None)
     genre_matrix = vectorizer.fit_transform(data['genres_2'])
     genre_df = pd.DataFrame(genre_matrix.toarray(), columns=[f'genre_2_{col}' for col in vectorizer.get_feature_names_out()])
     data = pd.concat([data, genre_df], axis=1)
 
     data['tmdb_origin_country_1'] = data['tmdb_origin_country_1'].apply(lambda x: x.replace("[", "").replace("]", "").replace("'", ""))
-    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "))
+    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "),token_pattern=None)
     country_matrix = vectorizer.fit_transform(data['tmdb_origin_country_1'])
     country_df = pd.DataFrame(country_matrix.toarray(), columns=[f'tmdb_origin_country_1_{col}' for col in vectorizer.get_feature_names_out()])
     data = pd.concat([data, country_df], axis=1)
 
     data['tmdb_origin_country_2'] = data['tmdb_origin_country_2'].apply(lambda x: x.replace("[", "").replace("]", "").replace("'", ""))
-    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "))
+    vectorizer = CountVectorizer(tokenizer=lambda x: x.split(", "),token_pattern=None)
     country_matrix = vectorizer.fit_transform(data['tmdb_origin_country_2'])
     country_df = pd.DataFrame(country_matrix.toarray(), columns=[f'tmdb_origin_country_2_{col}' for col in vectorizer.get_feature_names_out()])
     data = pd.concat([data, country_df], axis=1)

@@ -4,11 +4,14 @@
 
 We often hear that the second movie in a franchise is always worse than the first. However, human memories tend to be influenced by nostalgia, and it remains uncertain if this classic dinner table debate stands on tangible evidence. In this project, we aim to settle this debate by analyzing the list of movies and supplemental data from [the CMU Movie Summary Corpus](https://www.cs.cmu.edu/~ark/personas/). The preliminary questions to this analysis are, "What makes a good franhcise movie?" and “Are franchise movies more profitable than non-franchise movies?”. In search of answers to these questions, we investigate various metrics such as box office revenue, viewer rating, diversity representation etc., for franchise movies and make a contrast to non-franchise movies.
 
----
+## Data story
+
+Our blog posts are available in the following link: https://clementloyer.github.io/ada-website.github.io/
 
 ## Research Questions
 
 Following the objectives discussed in the abstract, here is the list of concrete questions to tackle with:
+
 1. **Do franchise movies degrade in quality and box office revenue as the sequel continues?**
 
 2. **Is there an underlying pattern of features that makes franchise movies successful? If so, what makes franchise movies different from non-franchise movies?**
@@ -48,7 +51,9 @@ Franchise movies have higher box office revenue than non franchise ones (statist
 
 ### Q2:
 
-To know which underlying pattern of features makes franchise movies successful, we first want to look at the parameters that are at play: we want to see if they are usable for our analysis, and if they have any influence on reviews or revenues at all. Then, once this is done, we could use decision trees to try to predict whether, depending on the budget, the genre, and all the other columns in our dataset for a given movie, the studio how to produce the more successful second movie choosing the best feature.  
+To know which underlying pattern of features makes franchise movies successful, we first want to look at the parameters that are at play: we want to see if they are usable for our analysis, and if they have any influence on reviews or revenues at all. After this initial stage of data exploration, we train a decision tree ([`HistGradientBoostingClassifier`](https://scikit-learn.org/1.5/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html)) to predict whether the subsequent movie exists for a given movie based on features such as genre, language and gender ratio of actors. Shapley values are calculated to identify features that contribute the best to the prediction and therefore, illustrating patterns common to franchise movies.
+
+<!-- Then, once this is done, we could use decision trees to try to predict whether, depending on the budget, the genre, and all the other columns in our dataset for a given movie, the studio how to produce the more successful second movie choosing the best feature.   -->
 
 ### Q2-1
 
@@ -69,9 +74,15 @@ By cross-referencing `Actor_ethnicity_Freebase_ID` with Wikidata, we restored >4
 Hispanic, White, Black, Asian, Native American, Middle Eastern, Others
 ```
 
-This grouping (`data/ethnicity_mapping.csv)`can be not only combined with actor analysis using movie plot, but also can be useful in tabular data analysis (`data/movie_metadata_with_tmdb.csv`). To analyze casting bias in the movie industry, we ran sentiment analysis on words that describes characters in movie plots. We plan to utilize the pert-of-speech tagging from the [spaCy package](https://spacy.io/) for extraction, combined with a trans""former-based pretrained language model.
+With these racial groups, we first looked into the representation of each group in franchise and non-franchise movies. Second, adjectives describing movie characters were extracted from corresponding movie plots, and mean sentiment scores of these adjectives were assigned to each character using [TextBlob](https://textblob.readthedocs.io/en/dev/). For adjective extraction, we relied on [GPT-4o mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/) by providing the following prompts via [Open AI API](https://github.com/openai/openai-python). The resulting json files are saved in `data/character_kws`.
 
-### 
+**System prompt (affects all responses from the model)**:
+> Given a list of character names and a movie plot summary, return a JSON object where each character name is a key, and the value is a list of adjectives that describe the character. Do not repeat the same words in the list. If a character is not mentioned or described in the plot, return an empty list for that character. The output should be directly loaded by json.loads() in Python.
+
+**Individual prompt (given for each movie plot)**
+> Character names: {characters} \nMovie plot summary: {plot}
+
+### Q2-4
 
 ### Q2-5
 

@@ -45,8 +45,6 @@ async def get_answer(prompt: str, client: AsyncOpenAI) -> str:
             {"role": "user", "content": prompt},
         ],
         model="gpt-4o-mini"
-        #model="gpt-3.5-turbo-0125"
-        #model="gpt-3.5-turbo-1106"
     )
     # Extract and return the assistant's reply
     return response.choices[0].message.content

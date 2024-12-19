@@ -90,32 +90,6 @@ The maps show one node for each country of the dataset (or regions for more clar
 
 Do connections increase the box office revenue of the movies? Is the effect significant? And significantly different from non-franchise movies?
 
-## Proposed timeline
-
-### Until P2 (Nov. 15):
-
-The preliminary analysis of the different data we have such as genre, box office revenue, character data, etc.
-
-### Nov. 15 - Nov. 22:
-
-We separate work as described in the next section, and continue working on the analyis to answer every single aspect of our research questions.
-
-### Nov. 22-29:
-
-Start creating the decision tree, reflect on other possible features to create the best second movie, or sequel, that might be valuable.
-
-### Nov. 29 - Dec. 6:
-
-A week dedicated to HW2. No work on the project.
-
-### Dec. 6-13:
-
-Some of us will start creating the website, the plan is to use Jekyll for the desing. All the visualization we use in the website should be finalized by the end of this week.
-
-### Dec. 13-20:
-
-Writing the data story, remarks and conclusion of the project on the web site
-
 ## **Organization within the team**
 
 - **Takuya** was in charge of downloading TMDB dataset and also preprocessing and the preliminary analysis of character data
@@ -141,9 +115,21 @@ conda install --file requirements.txt
 3. Create `data/constants.py` and add the following:
 
 ```python
-
 API_KEY = "YOUR_API_KEY"
-
 ```
 
 4. From the root, run `python fetch_data_from_tmdb.py`. This will create `data/movie_metadata_with_tmdb.csv`. Note that the run will take 2-3 hours, depending on your Internet connection.
+
+### Querying GPT 4o-mini
+
+1. Make sure that `plot_summaries.txt` and `character.metadata.tsv` are in `data/`.
+
+2. Obtain an API key from [Open AI API](https://platform.openai.com/api-keys).
+
+3. Create `data/constants.py` and add the following:
+
+```python
+OPENAI_API_KEY = "YOUR_API_KEY"
+```
+
+4. From the root, run `python query_chatgpt.py`. This will save json and pkl files in `data/character_kws`. The code is already optimized not to exceed [the rate limit for Tier 1 users](https://platform.openai.com/docs/guides/rate-limits/usage-tiers?context=tier-one). We queried 3000 plots at a time to follow this limit.

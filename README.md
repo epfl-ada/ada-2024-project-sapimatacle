@@ -84,8 +84,6 @@ With these racial groups, we first looked into the representation of each group 
 
 ### Q2-4
 
-### Q2-5
-
 The idea is to compare two networked maps of the world; one considering only franchised movies, the other considering all movies in the dataset. 
 
 The maps show one node for each country of the dataset (or regions for more clarity) and the connections between them. For each movie with a pair of origin countries, a connection is created. When a movie has multiple countries of origin, multiple pairs are created.

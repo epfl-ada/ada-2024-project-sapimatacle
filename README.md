@@ -99,11 +99,11 @@ Do connections increase the box office revenue of the movies? Is the effect sign
 
 ## **Organization within the team**
 
-- **Takuya** was in charge of downloading TMDB dataset and also preprocessing and the preliminary analysis of character data
-- **Maylis** will work on the movie genres and their subsequent analysis
-- **Salomé** will work on analyzing if there is a correlation between box office revenue, budget, its ratio and other feature of a movie.
-- **Clément** will be in charge of finalising the research about countries and regions, and will directly focus on building the website using Jekyll.
-- **Pierre** will work on the timeline visualisation and the research of the significant parameter and their influence.
+- **Takuya** was in charge of downloading TMDB dataset and analysing character data as well as building a decision tree and conducting Shapley value analysis.
+- **Maylis** worked on the movie genres and their subsequent analysis.
+- **Salomé** worked on analyzin the correlation between box office revenue, budget, its ratio and other feature of a movie. She was jointly involved in builidng a decision tree model with Takuya.
+- **Clément** analyzed dataset from geographical dimension such as countries and regions, as well as leading the website creation using Jekyll.
+- **Pierre** worked on the timeline visualisation and the research of the significant parameter and their influence.
 
 ## Usage
 

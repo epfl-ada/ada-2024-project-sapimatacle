@@ -2,7 +2,7 @@
 
 ## Abstract
 
-We often hear that the second movie in a franchise is always worse than the first. However, human memories tend to be influenced by nostalgia, and it remains uncertain if this classic dinner table debate stands on tangible evidence. In this project, we aim to settle this debate by analyzing the list of movies and supplemental data from [the CMU Movie Summary Corpus](https://www.cs.cmu.edu/~ark/personas/). The preliminary questions to this analysis are, "What makes a good franhcise movie?" and “Are franchise movies more profitable than non-franchise movies?”. In search of answers to these questions, we investigate various metrics such as box office revenue, viewer rating, diversity representation etc., for franchise movies and make a contrast to non-franchise movies.
+We often hear that the second movie in a franchise is always worse than the first. However, human memories tend to be influenced by nostalgia, and it remains uncertain if this classic dinner table debate stands on tangible evidence. In this project, we aim to settle this debate by analyzing the movie data from [the CMU Movie Summary Corpus](https://www.cs.cmu.edu/~ark/personas/) supplemented by [TMDB dataset](https://www.themoviedb.org/). The preliminary questions to this analysis are, "What makes a good franhcise movie?" and “Are franchise movies more profitable than non-franchise movies?”. In search of answers to these questions, we investigate various metrics such as box office revenue, viewer rating, diversity representation etc., for franchise movies and make a contrast to non-franchise movies.
 
 ## Data story
 
@@ -19,7 +19,7 @@ Following the objectives discussed in the abstract, here is the list of concrete
 
     2. Does the length and the number of movies impact the success of a franchise and how does it evolves in the franchise?
 
-    3. Do actors of certain ethnicity/gender groups play particular personas more frequently? Are they depicted positively (hero/heroine) or negatively (villain) in the movie?
+    3. Do actors of certain ethnicity/gender groups play particular personas more frequently? Are they depicted positively (*hero/heroine*) or negatively (*villain*) in the movie?
 
     4. From which regions of the world do most franchises come from, and what are the dominant collaboration fluxes between countries? Does it differ a lot from non-franchised movies? Are there parts of the world that mostly create single movies instead of movie series? Are there some parts of the world that interact more often when creating sagas of movies? Are there recurrent bonds that can be identified? And finally, do some features regarding countries of origin have a link with movie revenue and reviews ?
 
@@ -43,25 +43,24 @@ We complement our movie data by merging data from [the movie database (TMDB)](ht
 
 We decided to add this dataset and the mentionned features as they seem relevant to answer our research questions, and that the given data set had some issues, such as the genres proposed, which were very specific (this is shown in results.ipynb), not usable, and that needed to be grouped together.
 
-
 ## Methods
 
 ### Q1:
-In this analysis, all the values regarding profit, revenue, budget were adjusted by the inflation rate, so all of these features are "real", using this formula : Real Price = Nominal Price (at the time) ×CPI in Base Year / CPI in Year of Price
-The chosen base year is 2024. The CPI data are from the federal reserve bank of mineapolise (https://www.minneapolisfed.org/about-us/monetary-policy/inflation-calculator/consumer-price-index-1800) 
-We merged the data of the revenue and budget from the CMU data set and the TMBD to maximize our number of data on those features.
-Franchise movies have higher box office revenue, higher budget than non franchise ones (statistical significance). Also the analysis on the box office revenue shows a positive linear correlation exists between the movie budget and its box office revenue. 
-The bivariate analysis studies correlation between the ratio revenue over budget or only revenu or budget. We were able to highlights genres that are the most profitable. Vote average and revenue are also corelated. 
+Considering the inflation rate, all manetary features such as revenue, budget and profit were adjusted for analysis usng the following formula:
+$$
+\text{Real Price} = \frac{\text{Nominal Price in Year X} \times \text{CPI in Base Year}}{\text{CPI in Year X}}
+$$
+The chosen base year is 2024. The CPI data are taken from the [Federal Reserve Bank of Minneapolis](https://www.minneapolisfed.org/about-us/monetary-policy/inflation-calculator/consumer-price-index-1800). We merged the revenue and the budget data of the CMU and TMBD to maximize our number of data on those features. Franchise movies have higher box office revenue and higher budget than non franchise ones and we examined its statistical significance.
 
+<!-- THIS IS NOT METHOD, BUT CONTAINS RESULTS -->
+<!-- Also the analysis on the box office revenue shows a positive linear correlation exists between the movie budget and its box office revenue. The bivariate analysis studies correlation between the ratio revenue over budget or only revenu or budget. We were able to highlights genres that are the most profitable. Vote average and revenue are also corelated.  
 Franchise's budget, revenue, ratio decreases throught the sequels evolution. 
 Franchise's average vote feature as the same behavior. 
-
+-->
 
 ### Q2:
 
 To know which underlying pattern of features makes franchise movies successful, we first want to look at the parameters that are at play: we want to see if they are usable for our analysis, and if they have any influence on reviews or revenues at all. After this initial stage of data exploration, we train a decision tree ([`HistGradientBoostingClassifier`](https://scikit-learn.org/1.5/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html)) to predict whether the subsequent movie exists for a given movie based on features such as genre, language and gender ratio of actors. Shapley values are calculated to identify features that contribute the best to the prediction and therefore, illustrating patterns common to franchise movies.
-
-<!-- Then, once this is done, we could use decision trees to try to predict whether, depending on the budget, the genre, and all the other columns in our dataset for a given movie, the studio how to produce the more successful second movie choosing the best feature.   -->
 
 ### Q2-1
 
@@ -92,7 +91,7 @@ With these racial groups, we first looked into the representation of each group 
 
 ### Q2-4
 
-The idea is to compare two networked maps of the world; one considering only franchised movies, the other considering all movies in the dataset. 
+The idea is to compare two networked maps of the world; one considering only franchise movies, the other considering all movies in the dataset.
 
 The maps show one node for each country of the dataset (or regions for more clarity) and the connections between them. For each movie with a pair of origin countries, a connection is created. When a movie has multiple countries of origin, multiple pairs are created.
 

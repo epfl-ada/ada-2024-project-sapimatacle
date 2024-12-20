@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: url('/assets/fonts/JetBrainsMono-Regular.otf') format('opentype');
+}
+
+body {
+    font-family: 'JetBrains Mono', monospace;
+}

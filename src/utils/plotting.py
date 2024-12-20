@@ -197,3 +197,168 @@ def plot_geo_piecharts(movie_df, franchise_df, movies_no_franchise_df):
     plt.suptitle('Movies by geography', y=1.05, fontsize=18)
     plt.tight_layout()
     plt.show()
+
+def plot_heatmap_1(KNN_data_filt):
+    # Summing country mentions by cluster
+    country_sums = KNN_data_filt.groupby('Cluster')[
+        [col for col in KNN_data_filt.columns if col.startswith('country_')]
+    ].sum()
+
+    # Remove the 'country_' prefix from the column names
+    country_sums.columns = country_sums.columns.str.replace('country_', '')
+
+    # Sort countries by total mentions (sum across clusters)
+    country_sums = country_sums.loc[:, country_sums.sum().sort_values(ascending=False).index]
+    # remove the country that are mentionned only once
+    country_sums = country_sums.loc[:, country_sums.sum() > 1]
+
+
+    # Summing genre mentions by cluster
+    genre_sums = KNN_data_filt.groupby('Cluster')[
+        [col for col in KNN_data_filt.columns if col.startswith('genre_')]
+    ].sum()
+
+    # Remove the 'genre_' prefix from the column names
+    genre_sums.columns = genre_sums.columns.str.replace('genre_', '')
+
+    # put a capital letter at the beginning of the genre
+    genre_sums.columns = genre_sums.columns.str.capitalize()
+
+    # manually sorting the row to make the heatmap more readable
+    genre_sums = genre_sums.loc[:, ['Comedy', 'Family', 'Adventure', 'Horror', 'Thriller', 'Drama', 'Action', 'Animation', 'Fantasy', 'Romance', 'Crime', 'Mystery', 'Music', 'History', 'War', 'Western']]
+
+
+
+    # Plot the heatmap
+    fig, axs = plt.subplots(1, 2, figsize=(16, 8))
+    sns.heatmap(
+        genre_sums.T, 
+        annot=True, 
+        cmap='YlGnBu', 
+        fmt='g', 
+        cbar_kws={'label': 'Number of Mentions'},
+        ax=axs[0]
+    )
+    axs[0].set_title('Genre Mentions by Cluster (Sorted by Total Mentions)')
+    axs[0].set_xlabel('Cluster')
+    axs[0].set_ylabel('Genre')
+
+    sns.heatmap(
+        country_sums.T, 
+        annot=True, 
+        cmap='YlGnBu', 
+        fmt='g', 
+        cbar_kws={'label': 'Number of Mentions'},
+        ax=axs[1]
+    )
+    axs[1].set_title('Country Mentions by Cluster (Sorted by Total Mentions)')
+    axs[1].set_xlabel('Cluster')
+    axs[1].set_ylabel('Country')
+    plt.tight_layout()
+    plt.show()
+
+def plot_heatmap_2(KNN_1_2_filt):
+    """Function to plot heatmaps"""
+    # Summing country of the 1st movie mentions by cluster
+    country_sums_1 = KNN_1_2_filt.groupby('Cluster')[
+        [col for col in KNN_1_2_filt.columns if col.startswith('tmdb_origin_country_1_')]
+    ].sum()
+
+    # Remove the 'country_' prefix from the column names
+    country_sums_1.columns = country_sums_1.columns.str.replace('tmdb_origin_country_1_', '')
+
+    # Sort countries by total mentions (sum across clusters)
+    country_sums_1 = country_sums_1.loc[:, country_sums_1.sum().sort_values(ascending=False).index]
+
+
+    # Summing country of the 2nd movie mentions by cluster
+    country_sums_2 = KNN_1_2_filt.groupby('Cluster')[
+        [col for col in KNN_1_2_filt.columns if col.startswith('tmdb_origin_country_2_')]
+    ].sum()
+
+    # Remove the 'country_' prefix from the column names
+    country_sums_2.columns = country_sums_2.columns.str.replace('tmdb_origin_country_2_', '')
+
+    # Sort countries by total mentions (sum across clusters)
+    country_sums_2 = country_sums_2.loc[:, country_sums_2.sum().sort_values(ascending=False).index]
+
+    # remove the country that are mentionned only once
+    country_sums_1 = country_sums_1.loc[:, country_sums_1.sum() > 1]
+    country_sums_2 = country_sums_2.loc[:, country_sums_2.sum() > 1]
+
+    for column in country_sums_1.columns:
+        if column not in country_sums_2.columns:
+            country_sums_2[column] = 0
+    country_sums_2 = country_sums_2[country_sums_1.columns]
+
+    # Interleave the columns (1st movie then 2nd movie for each cluster)
+    interleaved_columns = []
+    for cluster in country_sums_1.columns:
+        interleaved_columns.append(country_sums_1[cluster].rename(f"{cluster} 1st Movie"))
+        interleaved_columns.append(country_sums_2[cluster].rename(f"{cluster} 2nd Movie"))
+
+    # Combine into a single DataFrame
+    country_sums = pd.concat(interleaved_columns, axis=1)
+
+
+    # Summing genre mentions by cluster
+    genre_sums_1 = KNN_1_2_filt.groupby('Cluster')[
+        [col for col in KNN_1_2_filt.columns if col.startswith('genre_1_')]
+    ].sum()
+
+    # Remove the 'genre_' prefix from the column names
+    genre_sums_1.columns = genre_sums_1.columns.str.replace('genre_1_', '')
+
+    # Sort genres by total mentions (sum across clusters)
+    genre_sums_1 = genre_sums_1.loc[:, genre_sums_1.sum().sort_values(ascending=False).index]
+
+    # Summing genre mentions by cluster
+    genre_sums_2 = KNN_1_2_filt.groupby('Cluster')[
+        [col for col in KNN_1_2_filt.columns if col.startswith('genre_2_')]
+    ].sum()
+
+    # Remove the 'genre_' prefix from the column names
+    genre_sums_2.columns = genre_sums_2.columns.str.replace('genre_2_', '')
+
+    # Sort genres by total mentions (sum across clusters)
+    genre_sums_2 = genre_sums_2.loc[:, genre_sums_2.sum().sort_values(ascending=False).index]
+
+    # Interleave the columns (1st movie then 2nd movie for each cluster)
+    interleaved_columns = []
+    for cluster in genre_sums_1.columns:
+        interleaved_columns.append(genre_sums_1[cluster].rename(f"{cluster} 1st Movie"))
+        interleaved_columns.append(genre_sums_2[cluster].rename(f"{cluster} 2nd Movie"))
+
+    # Combine into a single DataFrame
+    genre_sums = pd.concat(interleaved_columns, axis=1)
+
+    # separate the negative and positive cluster
+    genre_sums_neg = genre_sums.T.iloc[:,0:3]
+    genre_sums_pos = genre_sums.T.iloc[:,4:10]
+
+
+    # Plot the heatmap
+    fig, axs = plt.subplots(1, 2, figsize=(16, 8))
+    sns.heatmap(
+        genre_sums_neg, 
+        annot=True, 
+        cmap='YlGnBu', 
+        fmt='g', 
+        cbar_kws={'label': 'Number of Mentions'},
+        ax=axs[0]
+    )
+    axs[0].set_title('Genre Mentions by Cluster (Sorted by Total Mentions)')
+    axs[0].set_xlabel('Cluster')
+    axs[0].set_ylabel('Genre')
+
+    sns.heatmap(
+        genre_sums_pos, 
+        annot=True, 
+        cmap='YlGnBu', 
+        fmt='g', 
+        cbar_kws={'label': 'Number of Mentions'},
+        ax=axs[1]
+    )
+    axs[0].set_title('Genre Mentions by Cluster (Sorted by Total Mentions)')
+    axs[0].set_xlabel('Cluster')
+    axs[0].set_ylabel('Genre')

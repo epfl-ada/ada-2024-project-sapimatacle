@@ -109,7 +109,8 @@ def get_franchise_movies(data: pd.DataFrame, data_2: pd.DataFrame, path_missingd
     data['budget'] = data['budget'].apply(lambda x: np.nan if x==0 else x)
 
     #tacking into account inflation for revenue and budget
-    data['CPI'] = data.merge(data_2[['Year', 'CPI']], how='left', left_on='release_year', right_on='Year')['CPI']
+    data= pd.merge(data, data_2['CPI'], how='left', left_on=data['release_year'], right_on=data_2['Year'])
+    #data['CPI'] = data.merge(data_2[['Year', 'CPI']], how='left', left_on='release_year', right_on='Year')['CPI']
     base_year_cpi= data_2.loc[data_2['Year'] == 2024, 'CPI'].iloc[0] #base year 2024
     #Real Price = Nominal Price (at the time) × CPI in Base Year / CPI in Year of Price
     data['real_revenue']= data['box_office']*base_year_cpi/data['CPI'].iloc[0]
@@ -202,7 +203,8 @@ def get_movie(data: pd.DataFrame, data_2: pd.DataFrame):
     data['budget'] = data['budget'].apply(lambda x: np.nan if x==0 else x)
 
     #tacking into account inflation for revenue and budget
-    data['CPI'] = data.merge(data_2[['Year', 'CPI']], how='left', left_on='release_year', right_on='Year')['CPI']
+    data= pd.merge(data, data_2['CPI'], how='left', left_on=data['release_year'], right_on=data_2['Year'])
+    #data['CPI'] = data.merge(data_2[['Year', 'CPI']], how='left', left_on='release_year', right_on='Year')['CPI']
     base_year_cpi= data_2.loc[data_2['Year'] == 2024, 'CPI'].iloc[0] #base year 2024
     #Real Price = Nominal Price (at the time) × CPI in Base Year / CPI in Year of Price
     data['real_revenue']= data['box_office']*base_year_cpi/data['CPI'].iloc[0]

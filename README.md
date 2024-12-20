@@ -70,9 +70,50 @@ We could also do the same for movie reviews to answer these questions: which gen
 
 ### Q2-2
 
-To identify patterns in the size and duration of a franchise, a timeline plot was created for all franchises. Due to the large number of franchises, sorting, filtering, and coloring options will be provided. The goal is to subcategorise franchises for more detailed analysis, as examining all franchises together tends to yield less clear results. These results can be observed with the average vote as a function of the franchise length or the average vote within a franchise.
-The next goal is to perform different correlation tests in subgroups between parameters of a franchise and their success to determine them.
+To identify patterns in the size and duration of a franchise, a timeline plot was created for all franchises. Due to the large number of franchises, sorting, filtering, and coloring options have been provided.
 
+Another goal is to subcategorise franchises for more detailed analysis, as examining all franchises together tends to yield less clear results. A clustering algorithm was then used to group franchise that have similar features, then by examining the result, we have observed some common relation and general behaviour.
+
+We used a K-means model, for both the franchise as a whole and then at a deeper level with the 1st and 2nd movie of the franchise. For the second part, the franchise where the ratio increased from the first to the second movie were separated from the ones that decrease to make the analysis a bit easier. 
+
+The features used for both analysis:
+- at the franchise level :
+runtime_avg                               
+movie_count                                 
+average_years_bt_movies                   
+franchise_length_years
+revenue_avg
+budget_avg
+ratio_rb
+average_score     
+genres (is vectorized)
+country (is vecotrized)
+
+- at the first and second movie level:
+vote_count_1
+vote_count_2
+vote_average_1
+vote_average_2
+run_time_1
+run_time_2
+release_year_1
+release_year_2
+years_diff_bt_pre_movies_2
+real_revenue_1
+real_revenue_2
+real_budget_1
+real_budget_2
+real_profit_1
+real_profit_2
+ratio_revenue_budget_1
+ratio_revenue_budget_2
+num_genres_1
+num_genres_2
+collection_size_1 
+genres_1 (is vectorized)
+genres_2 (is vectorized)
+country_1 (is vectorized)
+country_2 (is vectorized)
 ### Q2-3
 
 By cross-referencing `Actor_ethnicity_Freebase_ID` with Wikidata, we restored >400 unique ethnicity categories. Inspired by racial groups used in [the British](https://www.ethnicity-facts-figures.service.gov.uk/style-guide/ethnic-groups/) and [the USA census](https://www.census.gov/topics/population/race/about.html), we came up with the following 7 racial groups into which we manually map these ethnicity categories:

@@ -562,7 +562,7 @@ def get_dummies_for_tree(movies_df):
                       with the original columns removed.
     """
     # only keep the columns we need
-    col_for_tree  = ['Movie runtime', 'vote_count',
+    col_for_tree  = ['vote_count',
                     'vote_average', 'genres','run_time', 'tmdb_origin_country', 'tmdb_original_language',
                     'num_Asian', 'num_Black', 'num_Hispanic', 'num_Middle Eastern',
                     'num_Native American', 'num_Others', 'num_White',
@@ -581,7 +581,7 @@ def get_dummies_for_tree(movies_df):
     all_countries = filter(lambda x: x != "", all_countries) # drop empty strings
 
     country_df = pd.DataFrame({f"from_{country}": data["tmdb_origin_country"].apply(
-        lambda x: int(country in x) if isinstance(x, str) else False) for country in all_countries})
+        lambda x: (country in x) if isinstance(x, str) else False) for country in all_countries})
     data = pd.concat([data, country_df], axis=1)
 
     # STEP 2: create binary "lang" columns
@@ -590,7 +590,7 @@ def get_dummies_for_tree(movies_df):
 
     # STEP 3: create binary "genre" columns
     genre_df = pd.DataFrame({f"is_{genre}": data["genres"].apply(
-        lambda x: int(genre in x) if isinstance(x, list) else False) for genre in TMDB_GENRES})
+        lambda x: (genre in x) if isinstance(x, list) else False) for genre in TMDB_GENRES})
     data = pd.concat([data, genre_df], axis=1)
 
     # STEP 4: drop the original columns

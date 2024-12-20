@@ -47,8 +47,15 @@ We decided to add this dataset and the mentionned features as they seem relevant
 ## Methods
 
 ### Q1:
+In this analysis, all the values regarding profit, revenue, budget were adjusted by the inflation rate, so all of these features are "real", using this formula : Real Price = Nominal Price (at the time) ×CPI in Base Year / CPI in Year of Price
+The chosen base year is 2024. The CPI data are from the federal reserve bank of mineapolise (https://www.minneapolisfed.org/about-us/monetary-policy/inflation-calculator/consumer-price-index-1800) 
+We merged the data of the revenue and budget from the CMU data set and the TMBD to maximize our number of data on those features.
+Franchise movies have higher box office revenue, higher budget than non franchise ones (statistical significance). Also the analysis on the box office revenue shows a positive linear correlation exists between the movie budget and its box office revenue. 
+The bivariate analysis studies correlation between the ratio revenue over budget or only revenu or budget. We were able to highlights genres that are the most profitable. Vote average and revenue are also corelated. 
 
-Franchise movies have higher box office revenue than non franchise ones (statistical significance), but the analysis on the box office shows that a positive linear correlation exists between the movie budget and its box office revenue. We did see that multiple data are missing, so using the added data set would be recommended. After putting some though on how to compare the box-office revenue between movies, we realized that as a movie budget and revenue are positively correlated, a comparaison of the ratio of those values towards movies in the franchise would be more accurate. The next steps would be to look at an eventual correlation between this ratio and the reviews ; as well as looking at how these values differ depending on the order of the movies in a franchise, and whether they are statistically significant or not. (102)
+Franchise's budget, revenue, ratio decreases throught the sequels evolution. 
+Franchise's average vote feature as the same behavior. 
+
 
 ### Q2:
 

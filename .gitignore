@@ -12,8 +12,7 @@ getimdb_id.ipynb
 resultsV1.ipynb
 resultsfinalpierre.ipynb
 results_salome_2.ipynb
-results_regression.ipynb
-*.ipynb
+
 
 # vscode
 *.code-workspace
